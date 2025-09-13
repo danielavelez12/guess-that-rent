@@ -4,7 +4,7 @@ import axios from "axios";
 import './App.css';
 import logo from "./logo.svg";
 import { ListingsResponse } from "./types";
-import GameContainer from './components/GameContainer';
+import GameConsole from './components/GameConsole';
 
 function App() {
   useEffect(() => {
@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      <GameContainer />
+      <GameConsole />
     </div>
   );
 }

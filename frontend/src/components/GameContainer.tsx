@@ -129,83 +129,75 @@ const GameContainer: React.FC = () => {
   const currentListing = listings[currentIndex];
   const photos = currentListing.fields.Photos || [];
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleGuessSubmit(e as any);
+    }
+  };
+
   return (
     <div className="game-container">
-      <div className="game-header">
+      {/* Full-screen image carousel */}
+      <ImageCarousel photos={photos} className="fullscreen-carousel" />
+
+      {/* Top-left app title */}
+      <div className="app-title">
         <h1>Guess That Rent</h1>
-        <div className="progress">
-          Listing {currentIndex + 1} of {listings.length}
+      </div>
+
+      {/* Right panel sidebar with property details */}
+      <div className="property-sidebar">
+        <h2>{currentListing.fields.Name}</h2>
+        <div className="property-subtitle">
+          Property {currentIndex + 1} of {listings.length}
+        </div>
+        <p className="address">{currentListing.fields.Address}</p>
+
+        <div className="property-info">
+          <span className="info-item">
+            {currentListing.fields['Bedroom Count']} Bedrooms
+          </span>
+          <span className="info-item">
+            {currentListing.fields['Bathroom Count']} Bathrooms
+          </span>
+        </div>
+
+        {currentListing.fields.Details && (
+          <p className="details">{currentListing.fields.Details}</p>
+        )}
+      </div>
+
+      {/* Bottom input overlay bar */}
+      <div className="input-overlay">
+        <div className="input-wrapper">
+          <span className="dollar-sign">$</span>
+          <input
+            type="number"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="What do you think this apartment rents for per month?"
+            min="1"
+            disabled={showResult}
+            className="rent-input"
+          />
         </div>
       </div>
 
-      <div className="listing-card">
-        <ImageCarousel photos={photos} className="listing-carousel" />
-
-        <div className="listing-details">
-          <h2>{currentListing.fields.Name}</h2>
-          <p className="address">{currentListing.fields.Address}</p>
-
-          <div className="property-info">
-            <span className="info-item">
-              {currentListing.fields["Bedroom Count"]} Bedrooms
-            </span>
-            <span className="info-item">
-              {currentListing.fields["Bathroom Count"]} Bathrooms
-            </span>
-          </div>
-
-          {currentListing.fields.Details && (
-            <p className="details">{currentListing.fields.Details}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="guess-section">
-        <form onSubmit={handleGuessSubmit} className="guess-form">
-          <div className="input-group">
-            <label htmlFor="guess">
-              What do you think the monthly rent is?
-            </label>
-            <div className="input-wrapper">
-              <span className="dollar-sign">$</span>
-              <input
-                type="number"
-                id="guess"
-                value={guess}
-                onChange={(e) => setGuess(e.target.value)}
-                placeholder="Enter your guess"
-                min="1"
-                required
-                disabled={showResult}
-              />
-            </div>
-          </div>
-          <button type="submit" disabled={showResult} className="submit-btn">
-            Submit Guess
-          </button>
-        </form>
-      </div>
-
+      {/* Result modal */}
       {showResult && guessResult && (
         <div className="result-modal">
           <div className="result-content">
             <h3>
-              {guessResult.isCorrect
-                ? "🎯 Perfect!"
-                : guessResult.difference < guessResult.actualRent * 0.1
-                ? "🔥 Close!"
-                : "Not quite!"}
+              {guessResult.isCorrect ? '🎯 Perfect!' :
+               guessResult.difference < guessResult.actualRent * 0.1 ? '🔥 Close!' :
+               'Not quite!'}
             </h3>
 
+
             <div className="result-details">
-              <p>
-                Your guess:{" "}
-                <strong>${guessResult.userGuess.toLocaleString()}</strong>
-              </p>
-              <p>
-                Actual rent:{" "}
-                <strong>${guessResult.actualRent.toLocaleString()}</strong>
-              </p>
+              <p>Your guess: <strong>${guessResult.userGuess.toLocaleString()}</strong></p>
+              <p>Actual rent: <strong>${guessResult.actualRent.toLocaleString()}</strong></p>
 
               {!guessResult.isCorrect && (
                 <p className="difference">

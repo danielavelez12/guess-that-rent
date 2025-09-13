@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { ListingsResponse, Listing } from '../types';
-import ImageCarousel from './ImageCarousel';
-import './GameContainer.css';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Listing, ListingsResponse } from "../types";
+import "./GameContainer.css";
+import ImageCarousel from "./ImageCarousel";
 
 interface GuessResult {
   userGuess: number;
@@ -16,7 +17,7 @@ const GameContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [guess, setGuess] = useState('');
+  const [guess, setGuess] = useState("");
   const [showResult, setShowResult] = useState(false);
   const [guessResult, setGuessResult] = useState<GuessResult | null>(null);
   const [gameComplete, setGameComplete] = useState(false);
@@ -24,15 +25,16 @@ const GameContainer: React.FC = () => {
   useEffect(() => {
     const loadListings = async () => {
       try {
-        const response = await fetch('/output.json');
-        if (!response.ok) {
-          throw new Error('Failed to load listings');
-        }
-        const data: ListingsResponse = await response.json();
-        setListings(data.listings);
+        const apiUrl = process.env.REACT_APP_API_URL;
+        const response = await axios.get<ListingsResponse>(
+          `${apiUrl}/listings`
+        );
+        setListings(response.data.listings);
         setLoading(false);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load listings');
+        setError(
+          err instanceof Error ? err.message : "Failed to load listings"
+        );
         setLoading(false);
       }
     };
@@ -42,35 +44,35 @@ const GameContainer: React.FC = () => {
 
   const handleGuessSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const userGuess = parseInt(guess);
     if (isNaN(userGuess) || userGuess <= 0) {
-      alert('Please enter a valid positive number');
+      alert("Please enter a valid positive number");
       return;
     }
 
     const currentListing = listings[currentIndex];
-    const actualRent = currentListing.fields['Rent Price'];
+    const actualRent = currentListing.fields["Rent Price"];
     const difference = Math.abs(userGuess - actualRent);
     const percentageDiff = Math.round((difference / actualRent) * 100);
-    
+
     const result: GuessResult = {
       userGuess,
       actualRent,
       difference,
       percentageDiff,
-      isCorrect: difference === 0
+      isCorrect: difference === 0,
     };
 
     setGuessResult(result);
     setShowResult(true);
-    setGuess('');
+    setGuess("");
   };
 
   const handleNextListing = () => {
     setShowResult(false);
     setGuessResult(null);
-    
+
     if (currentIndex < listings.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
@@ -83,7 +85,7 @@ const GameContainer: React.FC = () => {
     setGameComplete(false);
     setShowResult(false);
     setGuessResult(null);
-    setGuess('');
+    setGuess("");
   };
 
   if (loading) {
@@ -138,20 +140,20 @@ const GameContainer: React.FC = () => {
 
       <div className="listing-card">
         <ImageCarousel photos={photos} className="listing-carousel" />
-        
+
         <div className="listing-details">
           <h2>{currentListing.fields.Name}</h2>
           <p className="address">{currentListing.fields.Address}</p>
-          
+
           <div className="property-info">
             <span className="info-item">
-              {currentListing.fields['Bedroom Count']} Bedrooms
+              {currentListing.fields["Bedroom Count"]} Bedrooms
             </span>
             <span className="info-item">
-              {currentListing.fields['Bathroom Count']} Bathrooms
+              {currentListing.fields["Bathroom Count"]} Bathrooms
             </span>
           </div>
-          
+
           {currentListing.fields.Details && (
             <p className="details">{currentListing.fields.Details}</p>
           )}
@@ -161,7 +163,9 @@ const GameContainer: React.FC = () => {
       <div className="guess-section">
         <form onSubmit={handleGuessSubmit} className="guess-form">
           <div className="input-group">
-            <label htmlFor="guess">What do you think the monthly rent is?</label>
+            <label htmlFor="guess">
+              What do you think the monthly rent is?
+            </label>
             <div className="input-wrapper">
               <span className="dollar-sign">$</span>
               <input
@@ -186,25 +190,41 @@ const GameContainer: React.FC = () => {
         <div className="result-modal">
           <div className="result-content">
             <h3>
-              {guessResult.isCorrect ? '🎯 Perfect!' : 
-               guessResult.difference < guessResult.actualRent * 0.1 ? '🔥 Close!' :
-               'Not quite!'}
+              {guessResult.isCorrect
+                ? "🎯 Perfect!"
+                : guessResult.difference < guessResult.actualRent * 0.1
+                ? "🔥 Close!"
+                : "Not quite!"}
             </h3>
-            
+
             <div className="result-details">
-              <p>Your guess: <strong>${guessResult.userGuess.toLocaleString()}</strong></p>
-              <p>Actual rent: <strong>${guessResult.actualRent.toLocaleString()}</strong></p>
-              
+              <p>
+                Your guess:{" "}
+                <strong>${guessResult.userGuess.toLocaleString()}</strong>
+              </p>
+              <p>
+                Actual rent:{" "}
+                <strong>${guessResult.actualRent.toLocaleString()}</strong>
+              </p>
+
               {!guessResult.isCorrect && (
                 <p className="difference">
-                  You were <strong>{guessResult.userGuess > guessResult.actualRent ? 'too high' : 'too low'}</strong> by{' '}
-                  <strong>${guessResult.difference.toLocaleString()}</strong> ({guessResult.percentageDiff}% off)
+                  You were{" "}
+                  <strong>
+                    {guessResult.userGuess > guessResult.actualRent
+                      ? "too high"
+                      : "too low"}
+                  </strong>{" "}
+                  by <strong>${guessResult.difference.toLocaleString()}</strong>{" "}
+                  ({guessResult.percentageDiff}% off)
                 </p>
               )}
             </div>
 
             <button onClick={handleNextListing} className="next-btn">
-              {currentIndex < listings.length - 1 ? 'Next Listing' : 'Finish Game'}
+              {currentIndex < listings.length - 1
+                ? "Next Listing"
+                : "Finish Game"}
             </button>
           </div>
         </div>

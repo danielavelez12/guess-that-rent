@@ -701,3 +701,24 @@
     text-align: center;
   }
 }
+
+/* Make floating map smaller */
+.floating-map-container {
+  width: 350px !important;
+  height: 280px !important;
+}
+
+/* Update mobile responsiveness for smaller map */
+@media (max-width: 768px) {
+  .floating-map-container {
+    width: 280px !important;
+    height: 220px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-map-container {
+    width: 220px !important;
+    height: 180px !important;
+  }
+}

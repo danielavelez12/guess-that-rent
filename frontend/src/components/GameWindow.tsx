@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './GameWindow.css';
 import ImageCarousel from './ImageCarousel';
 
@@ -65,26 +65,31 @@ const GameWindow: React.FC<GameWindowProps> = ({
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (mapRef.current) {
       const rect = mapRef.current.getBoundingClientRect();
-      setDragOffset({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-      setIsDragging(true);
+      const containerRect = mapRef.current.parentElement?.getBoundingClientRect();
+      
+      if (containerRect) {
+        setDragOffset({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+        setIsDragging(true);
+      }
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     if (isDragging && mapRef.current) {
       const containerRect = mapRef.current.parentElement?.getBoundingClientRect();
       if (containerRect) {
         const newX = e.clientX - containerRect.left - dragOffset.x;
         const newY = e.clientY - containerRect.top - dragOffset.y;
         
-        // Keep map within bounds
-        const maxX = containerRect.width - 500; // map width
-        const maxY = containerRect.height - 400; // map height
+        // Keep map within bounds - updated for smaller size
+        const maxX = containerRect.width - 350; // smaller map width
+        const maxY = containerRect.height - 280; // smaller map height
         
         setMapPosition({
           x: Math.max(0, Math.min(newX, maxX)),
@@ -97,6 +102,19 @@ const GameWindow: React.FC<GameWindowProps> = ({
   const handleMouseUp = () => {
     setIsDragging(false);
   };
+
+  // Add global mouse event listeners when dragging
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragOffset]);
 
   return (
     <div className={`game-window ${isFullscreen ? 'fullscreen' : ''}`}>
@@ -172,12 +190,11 @@ const GameWindow: React.FC<GameWindowProps> = ({
                   right: 'auto',
                   bottom: 'auto'
                 }}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
               >
-                <div className="floating-map-header">
+                <div 
+                  className="floating-map-header"
+                  onMouseDown={handleMouseDown}
+                >
                   <span className="floating-map-title">LOCATION DATA</span>
                   <div className="floating-map-controls">
                     <span className="drag-handle">⋮⋮</span>

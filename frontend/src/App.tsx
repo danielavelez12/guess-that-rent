@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect } from "react";
 import axios from "axios";
 import './App.css';
-import logo from "./logo.svg";
 import { ListingsResponse } from "./types";
 import GameConsole from './components/GameConsole';
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import './GameWindow.css';
 import ImageCarousel from './ImageCarousel';
 
@@ -39,6 +39,10 @@ const GameWindow: React.FC<GameWindowProps> = ({
 }) => {
   const [guess, setGuess] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mapPosition, setMapPosition] = useState({ x: 20, y: 20 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,6 +62,40 @@ const GameWindow: React.FC<GameWindowProps> = ({
       e.preventDefault();
       setIsFullscreen(!isFullscreen);
     }
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (mapRef.current) {
+      const rect = mapRef.current.getBoundingClientRect();
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+      setIsDragging(true);
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && mapRef.current) {
+      const containerRect = mapRef.current.parentElement?.getBoundingClientRect();
+      if (containerRect) {
+        const newX = e.clientX - containerRect.left - dragOffset.x;
+        const newY = e.clientY - containerRect.top - dragOffset.y;
+        
+        // Keep map within bounds
+        const maxX = containerRect.width - 500; // map width
+        const maxY = containerRect.height - 400; // map height
+        
+        setMapPosition({
+          x: Math.max(0, Math.min(newX, maxX)),
+          y: Math.max(0, Math.min(newY, maxY))
+        });
+      }
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
   };
 
   return (
@@ -93,9 +131,14 @@ const GameWindow: React.FC<GameWindowProps> = ({
               {disabled ? 'ANALYZING...' : 'AWAITING INPUT'}
             </span>
           </div>
+          <div className="toolbar-section">
+            <span className="toolbar-label">CONTROLS:</span>
+            <span className="control-hint">F11: Fullscreen | Drag Map to Move</span>
+          </div>
         </div>
 
         <div className="window-content">
+          {/* Property Images View */}
           <div className="image-viewport">
             <div className="viewport-header">
               <div className="viewport-title">PROPERTY SURVEILLANCE</div>
@@ -116,6 +159,47 @@ const GameWindow: React.FC<GameWindowProps> = ({
                     <span className="hud-label">BATHROOMS:</span>
                     <span className="hud-value">{bathrooms}</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Floating Map Viewbox - Always Open */}
+              <div 
+                ref={mapRef}
+                className={`floating-map-container ${isDragging ? 'dragging' : ''}`}
+                style={{
+                  left: `${mapPosition.x}px`,
+                  top: `${mapPosition.y}px`,
+                  right: 'auto',
+                  bottom: 'auto'
+                }}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                <div className="floating-map-header">
+                  <span className="floating-map-title">LOCATION DATA</span>
+                  <div className="floating-map-controls">
+                    <span className="drag-handle">⋮⋮</span>
+                  </div>
+                </div>
+                <div className="floating-map-content">
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                      address
+                    )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title={`Map of ${address}`}
+                    className="floating-map-iframe"
+                  />
+                </div>
+                <div className="floating-map-footer">
+                  <span className="floating-map-coords">{address}</span>
                 </div>
               </div>
             </div>
@@ -155,7 +239,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
 
             <div className="panel-footer">
               <div className="hint-text">
-                💡 Use F11 for fullscreen mode • Press ENTER to submit
+                💡 F11 for fullscreen • Drag map header to move it around
               </div>
             </div>
           </div>
@@ -164,6 +248,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
         <div className="window-statusbar">
           <div className="status-left">
             <span className="status-item">TARGET: {propertyName}</span>
+            <span className="status-item">MAP: ACTIVE</span>
           </div>
           <div className="status-right">
             <span className="status-item">RENT DETECTIVE v1.0</span>

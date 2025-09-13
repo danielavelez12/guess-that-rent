@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './StoryIntro.css';
 
 interface StoryIntroProps {
@@ -9,7 +9,6 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const [showSkipButton, setShowSkipButton] = useState(false);
 
   const storyLines = [
     "Welcome, Agent...",
@@ -27,11 +26,22 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   ];
 
   const typingSpeed = 50; // milliseconds per character
-  const lineDelay = 300; // delay between lines
+
+  const skipStory = useCallback(() => {
+    const fullText = storyLines.join('\n');
+    setDisplayedText(fullText);
+    setCurrentLineIndex(storyLines.length);
+  }, [storyLines]);
+
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Enter' && currentLineIndex >= storyLines.length) {
+      onStoryComplete();
+    } else if (e.key === ' ' || e.key === 'Escape') {
+      skipStory();
+    }
+  }, [currentLineIndex, storyLines.length, onStoryComplete, skipStory]);
 
   useEffect(() => {
-    setShowSkipButton(true);
-
     const typeText = () => {
       if (currentLineIndex < storyLines.length) {
         const currentLine = storyLines[currentLineIndex];
@@ -51,26 +61,12 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
 
     const timer = setTimeout(typeText, typingSpeed);
     return () => clearTimeout(timer);
-  }, [currentCharIndex, currentLineIndex]);
-
-  const skipStory = () => {
-    const fullText = storyLines.join('\n');
-    setDisplayedText(fullText);
-    setCurrentLineIndex(storyLines.length);
-  };
-
-  const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === 'Enter' && currentLineIndex >= storyLines.length) {
-      onStoryComplete();
-    } else if (e.key === ' ' || e.key === 'Escape') {
-      skipStory();
-    }
-  };
+  }, [currentCharIndex, currentLineIndex, storyLines]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentLineIndex]);
+  }, [handleKeyPress]);
 
   return (
     <div className="story-intro">

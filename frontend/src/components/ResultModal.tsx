@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './ResultModal.css';
 
 interface GuessResult {
@@ -19,6 +19,12 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
   const [showDetails, setShowDetails] = useState(false);
   const [animationPhase, setAnimationPhase] = useState(0);
 
+  const handleKeyPress = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      onNext();
+    }
+  }, [onNext]);
+
   useEffect(() => {
     // Animation sequence
     const timers = [
@@ -29,6 +35,11 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
 
     return () => timers.forEach(clearTimeout);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [handleKeyPress]);
 
   const getResultTitle = () => {
     if (result.isCorrect) return "PERFECT MATCH!";
@@ -56,17 +67,6 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
     if (result.percentageDiff <= 50) return "C";
     return "D";
   };
-
-  const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      onNext();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, []);
 
   return (
     <div className="result-modal-overlay">

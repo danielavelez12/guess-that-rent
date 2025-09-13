@@ -722,3 +722,125 @@
     height: 180px !important;
   }
 }
+
+/* Property Details Panel */
+.property-details-panel {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  max-height: 200px;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #00ffff;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 15;
+  overflow: hidden;
+  box-shadow: 
+    0 0 20px rgba(0, 255, 255, 0.3),
+    inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.details-header {
+  background: linear-gradient(90deg, #1e1e2e, #2a2a3e);
+  padding: 8px 12px;
+  border-bottom: 1px solid #00ffff;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.details-title {
+  color: #00ffff;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-shadow: 0 0 8px #00ffff;
+  letter-spacing: 1px;
+}
+
+.details-content {
+  padding: 12px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.details-text {
+  color: #fff;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Scrollbar styling for details */
+.details-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.details-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.details-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 255, 0.5);
+  border-radius: 3px;
+}
+
+.details-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 255, 0.7);
+}
+
+/* Mobile responsiveness for details panel */
+@media (max-width: 768px) {
+  .property-details-panel {
+    width: 250px;
+    max-height: 150px;
+    top: 15px;
+    left: 15px;
+  }
+  
+  .details-header {
+    padding: 6px 10px;
+  }
+  
+  .details-title {
+    font-size: 0.8rem;
+  }
+  
+  .details-content {
+    padding: 10px;
+    max-height: 120px;
+  }
+  
+  .details-text {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .property-details-panel {
+    width: 200px;
+    max-height: 120px;
+    top: 10px;
+    left: 10px;
+  }
+  
+  .details-header {
+    padding: 5px 8px;
+  }
+  
+  .details-title {
+    font-size: 0.7rem;
+  }
+  
+  .details-content {
+    padding: 8px;
+    max-height: 100px;
+  }
+  
+  .details-text {
+    font-size: 0.75rem;
+  }
+}

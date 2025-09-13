@@ -20,6 +20,7 @@ interface GameWindowProps {
   address: string;
   bedrooms: number;
   bathrooms: number;
+  details: string;
   currentProperty: number;
   totalProperties: number;
   onGuessSubmit: (guess: number) => void;
@@ -32,6 +33,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
   address,
   bedrooms,
   bathrooms,
+  details,
   currentProperty,
   totalProperties,
   onGuessSubmit,
@@ -180,6 +182,18 @@ const GameWindow: React.FC<GameWindowProps> = ({
                   </div>
                 </div>
               </div>
+
+              {/* Property Details Panel */}
+              {details && (
+                <div className="property-details-panel">
+                  <div className="details-header">
+                    <span className="details-title">PROPERTY INTEL</span>
+                  </div>
+                  <div className="details-content">
+                    <p className="details-text">{details}</p>
+                  </div>
+                </div>
+              )}
 
               {/* Floating Map Viewbox - Always Open */}
               <div 

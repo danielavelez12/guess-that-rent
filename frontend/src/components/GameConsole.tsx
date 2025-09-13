@@ -197,6 +197,7 @@ const GameConsole: React.FC = () => {
             address={currentListing.fields.Address}
             bedrooms={currentListing.fields["Bedroom Count"]}
             bathrooms={currentListing.fields["Bathroom Count"]}
+            details={currentListing.fields.Details || ""}
             currentProperty={currentIndex + 1}
             totalProperties={listings.length}
             onGuessSubmit={handleGuessSubmit}
@@ -213,6 +214,7 @@ const GameConsole: React.FC = () => {
             address={listings[currentIndex].fields.Address}
             bedrooms={listings[currentIndex].fields["Bedroom Count"]}
             bathrooms={listings[currentIndex].fields["Bathroom Count"]}
+            details={listings[currentIndex].fields.Details || ""}
             currentProperty={currentIndex + 1}
             totalProperties={listings.length}
             onGuessSubmit={() => {}}

@@ -8,10 +8,9 @@ function App() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        // For development, assuming backend runs on localhost:8000
-        // For production, this would be your Render backend URL
+        const apiUrl = process.env.REACT_APP_API_URL;
         const response = await axios.get<ListingsResponse>(
-          "http://localhost:8000/listings"
+          `${apiUrl}/listings`
         );
         console.log("Backend response:", response.data);
         console.log("Number of listings:", response.data.count);

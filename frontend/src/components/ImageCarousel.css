@@ -1,3 +1,4 @@
+/* Default carousel styling */
 .image-carousel {
   position: relative;
   width: 100%;
@@ -7,11 +8,28 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Fullscreen carousel fills entire viewport */
+.image-carousel.fullscreen-carousel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  box-shadow: none;
+  background: #000;
+}
+
 .carousel-container {
   position: relative;
   width: 100%;
   height: 400px;
   overflow: hidden;
+}
+
+/* Fullscreen carousel container fills viewport */
+.fullscreen-carousel .carousel-container {
+  height: 100vh;
 }
 
 .image-container {
@@ -22,6 +40,10 @@
   align-items: center;
   justify-content: center;
   background: #f0f0f0;
+}
+
+.fullscreen-carousel .image-container {
+  background: #000;
 }
 
 .carousel-image {
@@ -35,7 +57,7 @@
   opacity: 0.95;
 }
 
-/* Navigation Arrows */
+/* Navigation Arrows - positioned at extreme edges */
 .carousel-arrow {
   position: absolute;
   top: 50%;
@@ -43,13 +65,13 @@
   background: rgba(0, 0, 0, 0.6);
   color: white;
   border: none;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-  z-index: 10;
+  z-index: 100;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -65,56 +87,60 @@
   transform: translateY(-50%) scale(0.95);
 }
 
+/* Arrows at extreme edges for fullscreen */
 .carousel-arrow-left {
-  left: 15px;
+  left: 0;
 }
 
 .carousel-arrow-right {
-  right: 15px;
+  right: 0;
 }
 
-/* Image Counter */
+/* Fullscreen arrows positioned at viewport edges */
+.fullscreen-carousel .carousel-arrow-left {
+  left: 20px;
+}
+
+.fullscreen-carousel .carousel-arrow-right {
+  right: 20px;
+}
+
+.fullscreen-carousel .carousel-arrow {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.fullscreen-carousel .carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Image Counter - positioned at bottom-right above input bar */
 .image-counter {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: rgba(0, 0, 0, 0.7);
+  bottom: 100px; /* Above the input bar */
+  right: 30px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   color: white;
-  padding: 6px 12px;
-  border-radius: 15px;
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 500;
-  z-index: 10;
+  font-weight: 600;
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Dot Indicators */
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px;
-  background: white;
-  gap: 8px;
-}
-
-.carousel-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  background: #ddd;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-dot:hover {
-  background: #bbb;
-  transform: scale(1.2);
-}
-
-.carousel-dot.active {
-  background: #4CAF50;
-  transform: scale(1.3);
+/* Fullscreen counter styling */
+.fullscreen-carousel .image-counter {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Error and No Photos States */
@@ -143,6 +169,18 @@
   opacity: 0.7;
 }
 
+.fullscreen-carousel .no-photos {
+  background: #000;
+}
+
+.fullscreen-carousel .no-photos-overlay,
+.fullscreen-carousel .image-error-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 24px;
+}
+
 /* Mobile Optimizations */
 @media (max-width: 768px) {
   .carousel-container {
@@ -150,39 +188,34 @@
   }
 
   .carousel-arrow {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
   }
 
-  .carousel-arrow-left {
-    left: 10px;
+  .fullscreen-carousel .carousel-arrow-left {
+    left: 15px;
   }
 
-  .carousel-arrow-right {
-    right: 10px;
+  .fullscreen-carousel .carousel-arrow-right {
+    right: 15px;
   }
 
   .image-counter {
-    top: 10px;
-    right: 10px;
+    bottom: 90px;
+    right: 20px;
     font-size: 12px;
-    padding: 4px 8px;
-  }
-
-  .carousel-dots {
-    padding: 12px;
-    gap: 6px;
-  }
-
-  .carousel-dot {
-    width: 10px;
-    height: 10px;
+    padding: 6px 12px;
   }
 
   .no-photos-overlay,
   .image-error-overlay {
     font-size: 16px;
+  }
+
+  .fullscreen-carousel .no-photos-overlay,
+  .fullscreen-carousel .image-error-overlay {
+    font-size: 20px;
   }
 }
 
@@ -192,14 +225,32 @@
   }
 
   .carousel-arrow {
-    width: 36px;
-    height: 36px;
-    font-size: 18px;
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+
+  .fullscreen-carousel .carousel-arrow-left {
+    left: 10px;
+  }
+
+  .fullscreen-carousel .carousel-arrow-right {
+    right: 10px;
+  }
+
+  .image-counter {
+    bottom: 80px;
+    right: 16px;
   }
 
   .no-photos-overlay,
   .image-error-overlay {
     font-size: 14px;
+  }
+
+  .fullscreen-carousel .no-photos-overlay,
+  .fullscreen-carousel .image-error-overlay {
+    font-size: 18px;
   }
 }
 
@@ -208,11 +259,11 @@
   .carousel-arrow {
     opacity: 0.7;
   }
-  
+
   .carousel-container {
     cursor: grab;
   }
-  
+
   .carousel-container:active {
     cursor: grabbing;
   }

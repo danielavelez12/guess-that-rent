@@ -61,9 +61,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
     }
   };
 
-  const handleDotClick = (index: number) => {
-    setCurrentIndex(index);
-  };
 
   const handleImageError = (index: number) => {
     setImageLoadError((prev) => new Set(prev).add(index));
@@ -174,19 +171,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
         )}
       </div>
 
-      {/* Dot Indicators */}
-      {validPhotos.length > 1 && (
-        <div className="carousel-dots">
-          {validPhotos.map((_, index) => (
-            <button
-              key={index}
-              className={`carousel-dot ${index === currentIndex ? 'active' : ''}`}
-              onClick={() => handleDotClick(index)}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </div>
   );
 };

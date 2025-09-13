@@ -1,8 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useEffect } from "react";
+import "./App.css";
+import logo from "./logo.svg";
+import { ListingsResponse } from "./types";
 
 function App() {
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        // For development, assuming backend runs on localhost:8000
+        // For production, this would be your Render backend URL
+        const response = await axios.get<ListingsResponse>(
+          "http://localhost:8000/listings"
+        );
+        console.log("Backend response:", response.data);
+        console.log("Number of listings:", response.data.count);
+        console.log("Listings:", response.data.listings);
+      } catch (error) {
+        console.error("Error fetching listings:", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">

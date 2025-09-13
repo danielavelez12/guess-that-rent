@@ -130,7 +130,7 @@ const GameContainer: React.FC = () => {
   const photos = currentListing.fields.Photos || [];
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleGuessSubmit(e as any);
     }
   };
@@ -155,16 +155,33 @@ const GameContainer: React.FC = () => {
 
         <div className="property-info">
           <span className="info-item">
-            {currentListing.fields['Bedroom Count']} Bedrooms
+            {currentListing.fields["Bedroom Count"]} Bedrooms
           </span>
           <span className="info-item">
-            {currentListing.fields['Bathroom Count']} Bathrooms
+            {currentListing.fields["Bathroom Count"]} Bathrooms
           </span>
         </div>
 
         {currentListing.fields.Details && (
           <p className="details">{currentListing.fields.Details}</p>
         )}
+
+        {/* Google Maps Embed */}
+        <div className="map-container">
+          <h3>Location</h3>
+          <iframe
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(
+              currentListing.fields.Address
+            )}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+            width="100%"
+            height="200"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title={`Map of ${currentListing.fields.Address}`}
+          />
+        </div>
       </div>
 
       {/* Bottom input overlay bar */}
@@ -189,15 +206,22 @@ const GameContainer: React.FC = () => {
         <div className="result-modal">
           <div className="result-content">
             <h3>
-              {guessResult.isCorrect ? '🎯 Perfect!' :
-               guessResult.difference < guessResult.actualRent * 0.1 ? '🔥 Close!' :
-               'Not quite!'}
+              {guessResult.isCorrect
+                ? "🎯 Perfect!"
+                : guessResult.difference < guessResult.actualRent * 0.1
+                ? "🔥 Close!"
+                : "Not quite!"}
             </h3>
 
-
             <div className="result-details">
-              <p>Your guess: <strong>${guessResult.userGuess.toLocaleString()}</strong></p>
-              <p>Actual rent: <strong>${guessResult.actualRent.toLocaleString()}</strong></p>
+              <p>
+                Your guess:{" "}
+                <strong>${guessResult.userGuess.toLocaleString()}</strong>
+              </p>
+              <p>
+                Actual rent:{" "}
+                <strong>${guessResult.actualRent.toLocaleString()}</strong>
+              </p>
 
               {!guessResult.isCorrect && (
                 <p className="difference">

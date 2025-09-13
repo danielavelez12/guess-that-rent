@@ -39,7 +39,8 @@ const GameWindow: React.FC<GameWindowProps> = ({
 }) => {
   const [guess, setGuess] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [mapPosition, setMapPosition] = useState({ x: 20, y: 20 });
+  // Position map on the right side by default to avoid blocking the numbers
+  const [mapPosition, setMapPosition] = useState({ x: -1, y: 20 }); // -1 means right side
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const mapRef = useRef<HTMLDivElement>(null);
@@ -185,9 +186,9 @@ const GameWindow: React.FC<GameWindowProps> = ({
                 ref={mapRef}
                 className={`floating-map-container ${isDragging ? 'dragging' : ''}`}
                 style={{
-                  left: `${mapPosition.x}px`,
+                  left: mapPosition.x === -1 ? 'auto' : `${mapPosition.x}px`,
+                  right: mapPosition.x === -1 ? '20px' : 'auto',
                   top: `${mapPosition.y}px`,
-                  right: 'auto',
                   bottom: 'auto'
                 }}
               >

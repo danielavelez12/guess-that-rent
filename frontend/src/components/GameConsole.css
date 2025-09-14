@@ -5,8 +5,24 @@
   width: 100vw;
   height: 100vh;
   background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
-  overflow: hidden;
   font-family: 'Courier New', monospace;
+}
+
+/* Allow scrolling on mobile for game background */
+@media (max-width: 768px) {
+  .game-console-background {
+    position: relative;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Only hide overflow on larger screens */
+@media (min-width: 769px) {
+  .game-console-background {
+    overflow: hidden;
+  }
 }
 
 /* Loading State */
@@ -21,6 +37,16 @@
   align-items: center;
   justify-content: center;
   font-family: 'Courier New', monospace;
+}
+
+/* Allow scrolling on mobile for loading state */
+@media (max-width: 768px) {
+  .game-console-loading {
+    position: relative;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .loading-console {
@@ -143,6 +169,16 @@
   font-family: 'Courier New', monospace;
 }
 
+/* Allow scrolling on mobile for error state */
+@media (max-width: 768px) {
+  .game-console-error {
+    position: relative;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .error-console {
   width: 90%;
   max-width: 600px;
@@ -257,6 +293,15 @@
   justify-content: center;
   font-family: 'Courier New', monospace;
   overflow-y: auto;
+}
+
+/* Allow scrolling on mobile for complete state */
+@media (max-width: 768px) {
+  .game-console-complete {
+    position: relative;
+    min-height: 100vh;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .complete-console {

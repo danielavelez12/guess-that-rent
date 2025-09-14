@@ -2,15 +2,23 @@
   margin: 0;
   padding: 0;
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  /* Prevent bounce scrolling on iOS */
+  min-height: 100vh;
+  position: relative;
+  /* Enable smooth scrolling on mobile when needed */
   -webkit-overflow-scrolling: touch;
+}
+
+/* Only fix position and hide overflow on larger screens */
+@media (min-width: 769px) {
+  .App {
+    height: 100vh;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
 }
 
 * {
@@ -38,9 +46,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Courier New', monospace;
-  overflow: hidden;
-  /* Prevent pull-to-refresh on mobile */
-  overscroll-behavior: none;
   /* Prevent zoom on iOS double-tap */
   touch-action: manipulation;
   /* Better font rendering */
@@ -51,10 +56,24 @@ body {
 html {
   margin: 0;
   padding: 0;
-  overflow: hidden;
   /* Support for safe area insets on devices with notches */
   height: 100%;
   height: -webkit-fill-available;
+}
+
+/* Only hide overflow on larger screens */
+@media (min-width: 769px) {
+  body, html {
+    overflow: hidden;
+  }
+}
+
+/* Mobile-specific scrolling behavior */
+@media (max-width: 768px) {
+  body {
+    /* Enable pull-to-refresh only on mobile */
+    overscroll-behavior-y: auto;
+  }
 }
 
 /* Handle safe area insets for devices with notches */

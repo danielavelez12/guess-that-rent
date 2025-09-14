@@ -40,7 +40,6 @@ const GameWindow: React.FC<GameWindowProps> = ({
   disabled = false
 }) => {
   const [guess, setGuess] = useState('');
-  const [isFullscreen, setIsFullscreen] = useState(false);
   // Position map on the right side by default to avoid blocking the numbers
   const [mapPosition, setMapPosition] = useState({ x: -1, y: 20 }); // -1 means right side
   const [isDragging, setIsDragging] = useState(false);
@@ -60,10 +59,6 @@ const GameWindow: React.FC<GameWindowProps> = ({
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !disabled) {
       handleSubmit(e as any);
-    }
-    if (e.key === 'F11') {
-      e.preventDefault();
-      setIsFullscreen(!isFullscreen);
     }
   };
 
@@ -120,53 +115,13 @@ const GameWindow: React.FC<GameWindowProps> = ({
   }, [isDragging, dragOffset]);
 
   return (
-    <div className={`game-window ${isFullscreen ? 'fullscreen' : ''}`}>
+    <div className="game-window fullscreen">
       <div className="window-frame">
-        <div className="window-header">
-          <div className="window-title">
-            <span className="window-icon">🏠</span>
-            PROPERTY ANALYZER v2.0
-          </div>
-          <div className="window-controls">
-            <button 
-              className="window-btn minimize"
-              title="Toggle Fullscreen (F11)"
-              onClick={() => setIsFullscreen(!isFullscreen)}
-            >
-              {isFullscreen ? '🗗' : '🗖'}
-            </button>
-            <div className="window-btn status">●</div>
-          </div>
-        </div>
 
-        <div className="window-toolbar">
-          <div className="toolbar-section">
-            <span className="toolbar-label">MISSION:</span>
-            <span className="mission-counter">
-              {currentProperty}/{totalProperties}
-            </span>
-          </div>
-          <div className="toolbar-section">
-            <span className="toolbar-label">STATUS:</span>
-            <span className="status-indicator">
-              {disabled ? 'ANALYZING...' : 'AWAITING INPUT'}
-            </span>
-          </div>
-          <div className="toolbar-section">
-            <span className="toolbar-label">CONTROLS:</span>
-            <span className="control-hint">F11: Fullscreen | Drag Map to Move</span>
-          </div>
-        </div>
 
         <div className="window-content">
           {/* Property Images View */}
           <div className="image-viewport">
-            <div className="viewport-header">
-              <div className="viewport-title">PROPERTY SURVEILLANCE</div>
-              <div className="viewport-coords">
-                📍 {address}
-              </div>
-            </div>
             
             <div className="image-container">
               <ImageCarousel photos={photos} className="game-carousel" />
@@ -230,18 +185,11 @@ const GameWindow: React.FC<GameWindowProps> = ({
                     className="floating-map-iframe"
                   />
                 </div>
-                <div className="floating-map-footer">
-                  <span className="floating-map-coords">{address}</span>
-                </div>
               </div>
             </div>
           </div>
 
           <div className="control-panel">
-            <div className="panel-header">
-              <div className="panel-title">RENT ESTIMATION TERMINAL</div>
-              <div className="panel-subtitle">Enter your price analysis</div>
-            </div>
             
             <form onSubmit={handleSubmit} className="estimation-form">
               <div className="input-group">
@@ -269,23 +217,9 @@ const GameWindow: React.FC<GameWindowProps> = ({
               </div>
             </form>
 
-            <div className="panel-footer">
-              <div className="hint-text">
-                💡 F11 for fullscreen • Drag map header to move it around
-              </div>
-            </div>
           </div>
         </div>
 
-        <div className="window-statusbar">
-          <div className="status-left">
-            <span className="status-item">TARGET: {propertyName}</span>
-            <span className="status-item">MAP: ACTIVE</span>
-          </div>
-          <div className="status-right">
-            <span className="status-item">RENT DETECTIVE v1.0</span>
-          </div>
-        </div>
       </div>
     </div>
   );

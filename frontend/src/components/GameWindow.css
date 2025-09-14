@@ -485,6 +485,17 @@
   padding: 0;
 }
 
+/* Hide number input spinners */
+.rent-estimation-input::-webkit-outer-spin-button,
+.rent-estimation-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.rent-estimation-input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .rent-estimation-input::placeholder {
   color: #666;
 }

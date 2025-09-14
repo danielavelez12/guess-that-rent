@@ -104,14 +104,12 @@ const GameConsole: React.FC = () => {
 
   const getOverallGrade = () => {
     const accuracy = getAverageAccuracy();
-    if (accuracy >= 95) return "SSS";
-    if (accuracy >= 90) return "S+";
-    if (accuracy >= 85) return "S";
-    if (accuracy >= 80) return "A+";
-    if (accuracy >= 75) return "A";
-    if (accuracy >= 65) return "B";
-    if (accuracy >= 50) return "C";
-    return "D";
+    if (accuracy >= 90) return "S";
+    if (accuracy >= 80) return "A";
+    if (accuracy >= 70) return "B";
+    if (accuracy >= 60) return "C";
+    if (accuracy >= 50) return "D";
+    return "F";
   };
 
   // Render based on game state
@@ -261,11 +259,11 @@ const GameConsole: React.FC = () => {
                 </div>
 
                 <div className="completion-message">
-                  {getAverageAccuracy() >= 80 
-                    ? "🏆 EXCELLENT WORK! You have mastered the art of rent estimation!"
+                  {getAverageAccuracy() >= 80
+                    ? "🔥 HOLY SHIT! My neural network training actually worked! You're crushing the NYC rental market like a boss. Those 60-hour coding sprints were worth it!"
                     : getAverageAccuracy() >= 60
-                    ? "👍 GOOD JOB! With more practice, you'll become a rent expert!"
-                    : "📈 KEEP PRACTICING! The rental market is challenging, but you're learning!"
+                    ? "💪 Not bad! You're learning the market patterns. My AI is getting smarter. Soon we'll be outbidding every crypto bro in Brooklyn!"
+                    : "😤 Ugh, you're still getting schooled by trust fund kids. Back to the training data - I need to feed you more listings!"
                   }
                 </div>
 

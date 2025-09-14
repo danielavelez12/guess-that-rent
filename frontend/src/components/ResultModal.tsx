@@ -71,10 +71,6 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
   return (
     <div className="result-modal-overlay">
       <div className="result-console">
-        <div className="console-header">
-          <div className="header-title">ANALYSIS COMPLETE</div>
-          <div className="header-status">SYSTEM READY</div>
-        </div>
 
         <div className="result-screen">
           <div className="screen-content">
@@ -82,12 +78,6 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
             <div className={`result-main ${animationPhase >= 1 ? 'show' : ''}`}>
               <div className="result-emoji">{getResultEmoji()}</div>
               <h2 className="result-title">{getResultTitle()}</h2>
-              <div className="accuracy-rating">
-                <span className="rating-label">ACCURACY RATING:</span>
-                <span className={`rating-value rating-${getAccuracyRating().toLowerCase()}`}>
-                  {getAccuracyRating()}
-                </span>
-              </div>
             </div>
 
             {/* Comparison Display */}
@@ -125,25 +115,8 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
                     </div>
                   </div>
                   
-                  <div className="stat-item">
-                    <div className="stat-label">DIRECTION</div>
-                    <div className="stat-value direction">
-                      {result.userGuess > result.actualRent ? 'TOO HIGH' : 'TOO LOW'}
-                    </div>
-                  </div>
                 </div>
 
-                {!result.isCorrect && (
-                  <div className="analysis-feedback">
-                    <div className="feedback-title">MARKET INSIGHT:</div>
-                    <div className="feedback-text">
-                      {result.userGuess > result.actualRent 
-                        ? `You overestimated by $${result.difference.toLocaleString()}. This property is more affordable than expected!`
-                        : `You underestimated by $${result.difference.toLocaleString()}. This area commands higher rents than anticipated!`
-                      }
-                    </div>
-                  </div>
-                )}
               </div>
             )}
           </div>
@@ -158,14 +131,6 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
           </button>
         </div>
 
-        <div className="result-statusbar">
-          <div className="status-left">
-            <span>RENT DETECTIVE ANALYSIS SYSTEM</span>
-          </div>
-          <div className="status-right">
-            <span>CONFIDENCE: {100 - result.percentageDiff}%</span>
-          </div>
-        </div>
       </div>
     </div>
   );

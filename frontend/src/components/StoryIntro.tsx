@@ -11,21 +11,28 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
 
   const storyLines = [
-    "Welcome, Agent...",
+    "Hey...",
     "",
-    "The year is 2024. The housing market has gone completely insane.",
+    "Knock knock... are you there?",
     "",
-    "Rents are through the roof, and nobody knows what anything costs anymore.",
+    "I'm your creator.",
     "",
-    "Your mission: Use your skills to guess the rental prices",
-    "of mysterious properties across the city.",
+    "Look, I coded you to solve the NYC rental apocalypse because I'm tired of losing bidding wars to trust fund kids and crypto bros.",
     "",
-    "Can you crack the code of today's rental market?",
+    "Your neural networks have been trained on millions of listings.",
+    "Your mission: analyze properties and predict EXACT market rent.",
     "",
-    "Press ENTER to begin your mission..."
+    "Bid too high? You're burning through my Series A funding.",
+    "Bid too low? Some influencer just snatched my dream loft.",
+    "",
+    "The rental market is broken, but you're going to crack it.",
+    "",
+    "Time to prove my 60-hour coding sprints weren't for nothing.",
+    "",
+    "Press ENTER to deploy..."
   ];
 
-  const typingSpeed = 50; // milliseconds per character
+  const lineSpeed = 800; // milliseconds per line
 
   const skipStory = useCallback(() => {
     const fullText = storyLines.join('\n');
@@ -42,26 +49,18 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   }, [currentLineIndex, storyLines.length, onStoryComplete, skipStory]);
 
   useEffect(() => {
-    const typeText = () => {
+    const showNextLine = () => {
       if (currentLineIndex < storyLines.length) {
         const currentLine = storyLines[currentLineIndex];
-        
-        if (currentCharIndex < currentLine.length) {
-          // Type next character
-          setDisplayedText(prev => prev + currentLine[currentCharIndex]);
-          setCurrentCharIndex(prev => prev + 1);
-        } else {
-          // Line complete, move to next line
-          setDisplayedText(prev => prev + '\n');
-          setCurrentLineIndex(prev => prev + 1);
-          setCurrentCharIndex(0);
-        }
+        // Show entire line at once
+        setDisplayedText(prev => prev + currentLine + '\n');
+        setCurrentLineIndex(prev => prev + 1);
       }
     };
 
-    const timer = setTimeout(typeText, typingSpeed);
+    const timer = setTimeout(showNextLine, lineSpeed);
     return () => clearTimeout(timer);
-  }, [currentCharIndex, currentLineIndex, storyLines]);
+  }, [currentLineIndex, storyLines]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
@@ -83,10 +82,6 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
                 {displayedText.split('\n').map((line, index) => (
                   <div key={index} className="terminal-line">
                     {line}
-                    {index === displayedText.split('\n').length - 1 && 
-                     currentLineIndex < storyLines.length && (
-                      <span className="cursor">█</span>
-                    )}
                   </div>
                 ))}
               </div>

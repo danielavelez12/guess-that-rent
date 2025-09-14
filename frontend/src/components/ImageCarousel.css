@@ -181,53 +181,130 @@
   font-size: 24px;
 }
 
-/* Mobile Optimizations */
+/* Enhanced Mobile Optimizations */
 @media (max-width: 768px) {
   .carousel-container {
-    height: 300px;
+    height: 280px;
+  }
+
+  .fullscreen-carousel .carousel-container {
+    height: 100vh;
   }
 
   .carousel-arrow {
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .carousel-arrow:active {
+    transform: translateY(-50%) scale(0.9);
+    background: rgba(0, 0, 0, 0.9);
   }
 
   .fullscreen-carousel .carousel-arrow-left {
-    left: 15px;
+    left: 12px;
   }
 
   .fullscreen-carousel .carousel-arrow-right {
-    right: 15px;
+    right: 12px;
+  }
+
+  .fullscreen-carousel .carousel-arrow {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .fullscreen-carousel .carousel-arrow:hover,
+  .fullscreen-carousel .carousel-arrow:active {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.5);
   }
 
   .image-counter {
-    bottom: 90px;
-    right: 20px;
-    font-size: 12px;
-    padding: 6px 12px;
+    bottom: 85px;
+    right: 15px;
+    font-size: 11px;
+    padding: 5px 10px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+  }
+
+  .fullscreen-carousel .image-counter {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .no-photos-overlay,
   .image-error-overlay {
-    font-size: 16px;
+    font-size: 15px;
+    padding: 20px;
   }
 
   .fullscreen-carousel .no-photos-overlay,
   .fullscreen-carousel .image-error-overlay {
-    font-size: 20px;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
   }
 }
 
 @media (max-width: 480px) {
   .carousel-container {
-    height: 250px;
+    height: 220px;
+  }
+
+  .fullscreen-carousel .carousel-container {
+    height: 100vh;
   }
 
   .carousel-arrow {
-    width: 45px;
-    height: 45px;
-    font-size: 20px;
+    width: 42px;
+    height: 42px;
+    font-size: 18px;
+  }
+
+  .fullscreen-carousel .carousel-arrow-left {
+    left: 8px;
+  }
+
+  .fullscreen-carousel .carousel-arrow-right {
+    right: 8px;
+  }
+
+  .image-counter {
+    bottom: 75px;
+    right: 12px;
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .no-photos-overlay,
+  .image-error-overlay {
+    font-size: 13px;
+    padding: 15px;
+  }
+
+  .fullscreen-carousel .no-photos-overlay,
+  .fullscreen-carousel .image-error-overlay {
+    font-size: 16px;
+  }
+}
+
+/* Landscape phone optimizations for Image Carousel */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+  .carousel-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
   }
 
   .fullscreen-carousel .carousel-arrow-left {
@@ -239,18 +316,41 @@
   }
 
   .image-counter {
-    bottom: 80px;
-    right: 16px;
+    bottom: 60px;
+    right: 15px;
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+}
+
+/* Touch gesture improvements */
+@media (hover: none) and (pointer: coarse) {
+  .carousel-container {
+    -webkit-overflow-scrolling: touch;
   }
 
-  .no-photos-overlay,
-  .image-error-overlay {
-    font-size: 14px;
+  .carousel-arrow:active {
+    transition: transform 0.1s ease;
   }
 
-  .fullscreen-carousel .no-photos-overlay,
-  .fullscreen-carousel .image-error-overlay {
-    font-size: 18px;
+  /* Add touch indication */
+  .fullscreen-carousel::after {
+    content: '';
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    z-index: 50;
+    animation: swipeHint 3s ease-in-out infinite;
+  }
+
+  @keyframes swipeHint {
+    0%, 100% { opacity: 0; width: 40px; }
+    50% { opacity: 0.7; width: 80px; }
   }
 }
 

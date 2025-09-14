@@ -58,9 +58,14 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
       }
     };
 
-    const timer = setTimeout(showNextLine, lineSpeed);
+    // If current line is blank, show it immediately without delay
+    const currentLine = storyLines[currentLineIndex];
+    const isBlankLine = currentLine === "";
+    const delay = isBlankLine ? 0 : lineSpeed;
+
+    const timer = setTimeout(showNextLine, delay);
     return () => clearTimeout(timer);
-  }, [currentLineIndex, storyLines]);
+  }, [currentLineIndex, storyLines, lineSpeed]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);

@@ -17,7 +17,7 @@ interface ResultModalProps {
 
 const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastProperty }) => {
   const [showDetails, setShowDetails] = useState(false);
-  const [animationPhase, setAnimationPhase] = useState(0);
+  const [showMainResult, setShowMainResult] = useState(false);
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -26,11 +26,10 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
   }, [onNext]);
 
   useEffect(() => {
-    // Animation sequence
+    // Two-step animation: first emoji+title, then everything else
     const timers = [
-      setTimeout(() => setAnimationPhase(1), 300),
-      setTimeout(() => setAnimationPhase(2), 800),
-      setTimeout(() => setShowDetails(true), 1200),
+      setTimeout(() => setShowMainResult(true), 200),  // Show emoji and title
+      setTimeout(() => setShowDetails(true), 400),     // Show comparison and details
     ];
 
     return () => timers.forEach(clearTimeout);
@@ -75,49 +74,49 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
         <div className="result-screen">
           <div className="screen-content">
             {/* Main Result Display */}
-            <div className={`result-main ${animationPhase >= 1 ? 'show' : ''}`}>
+            <div className={`result-main ${showMainResult ? 'show' : ''}`}>
               <div className="result-emoji">{getResultEmoji()}</div>
               <h2 className="result-title">{getResultTitle()}</h2>
             </div>
 
-            {/* Comparison Display */}
-            <div className={`result-comparison ${animationPhase >= 2 ? 'show' : ''}`}>
-              <div className="comparison-grid">
-                <div className="comparison-item your-guess">
-                  <div className="item-label">YOUR ANALYSIS</div>
-                  <div className="item-value">${result.userGuess.toLocaleString()}</div>
-                </div>
-                
-                <div className="vs-divider">VS</div>
-                
-                <div className="comparison-item actual-rent">
-                  <div className="item-label">ACTUAL RENT</div>
-                  <div className="item-value">${result.actualRent.toLocaleString()}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Detailed Stats */}
+            {/* Comparison Display and Detailed Stats - shown together in second stage */}
             {showDetails && (
-              <div className="result-details show">
-                <div className="stats-grid">
-                  <div className="stat-item">
-                    <div className="stat-label">DIFFERENCE</div>
-                    <div className="stat-value difference">
-                      ${result.difference.toLocaleString()}
+              <>
+                <div className="result-comparison show">
+                  <div className="comparison-grid">
+                    <div className="comparison-item your-guess">
+                      <div className="item-label">YOUR ANALYSIS</div>
+                      <div className="item-value">${result.userGuess.toLocaleString()}</div>
+                    </div>
+
+                    <div className="vs-divider">VS</div>
+
+                    <div className="comparison-item actual-rent">
+                      <div className="item-label">ACTUAL RENT</div>
+                      <div className="item-value">${result.actualRent.toLocaleString()}</div>
                     </div>
                   </div>
-                  
-                  <div className="stat-item">
-                    <div className="stat-label">ERROR RATE</div>
-                    <div className="stat-value error-rate">
-                      {result.percentageDiff}%
-                    </div>
-                  </div>
-                  
                 </div>
 
-              </div>
+                <div className="result-details show">
+                  <div className="stats-grid">
+                    <div className="stat-item">
+                      <div className="stat-label">DIFFERENCE</div>
+                      <div className="stat-value difference">
+                        ${result.difference.toLocaleString()}
+                      </div>
+                    </div>
+
+                    <div className="stat-item">
+                      <div className="stat-label">ERROR RATE</div>
+                      <div className="stat-value error-rate">
+                        {result.percentageDiff}%
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>

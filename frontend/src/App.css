@@ -4,10 +4,34 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Prevent bounce scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 * {
   box-sizing: border-box;
+  /* Prevent text selection on mobile for UI elements */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow text selection in input fields and text content */
+input,
+textarea,
+.terminal-text,
+.details-text,
+.feedback-text {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 body {
@@ -15,10 +39,79 @@ body {
   padding: 0;
   font-family: 'Courier New', monospace;
   overflow: hidden;
+  /* Prevent pull-to-refresh on mobile */
+  overscroll-behavior: none;
+  /* Prevent zoom on iOS double-tap */
+  touch-action: manipulation;
+  /* Better font rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 html {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  /* Support for safe area insets on devices with notches */
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+/* Handle safe area insets for devices with notches */
+@supports (padding: max(0px)) {
+  .App {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Prevent iOS zoom on form focus */
+@media screen and (max-width: 768px) {
+  select,
+  textarea,
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="color"] {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+}
+
+/* Touch-specific optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Improve touch responsiveness */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  .control-btn,
+  .submit-btn,
+  .continue-btn,
+  .carousel-arrow {
+    cursor: pointer;
+    /* Add subtle touch feedback */
+    transition: transform 0.1s ease, opacity 0.1s ease;
+  }
+
+  button:active,
+  .control-btn:active,
+  .submit-btn:active,
+  .continue-btn:active,
+  .carousel-arrow:active {
+    transform: scale(0.97);
+    opacity: 0.8;
+  }
 }

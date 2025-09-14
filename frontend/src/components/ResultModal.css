@@ -87,7 +87,7 @@
   margin-bottom: 30px;
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s ease;
+  transition: all 0.3s ease;
 }
 
 .result-main.show {
@@ -150,7 +150,7 @@
   margin-bottom: 30px;
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s ease 0.2s;
+  transition: all 0.3s ease 0.05s;
 }
 
 .result-comparison.show {
@@ -209,7 +209,7 @@
 .result-details {
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s ease 0.4s;
+  transition: all 0.3s ease 0.2s;
 }
 
 .result-details.show {
@@ -363,92 +363,264 @@
   z-index: 1;
 }
 
-/* Mobile responsiveness */
+/* Enhanced Mobile responsiveness */
 @media (max-width: 768px) {
+  .result-modal-overlay {
+    padding: 10px;
+  }
+
   .result-console {
-    width: 95%;
-    margin: 10px;
+    width: 98%;
+    max-width: none;
+    margin: 5px;
+    border-width: 3px;
   }
-  
+
   .console-header {
-    padding: 12px 20px;
+    padding: 10px 15px;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
   }
-  
+
   .header-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
-  
+
+  .header-status {
+    font-size: 0.75rem;
+  }
+
   .result-screen {
-    margin: 15px;
-    min-height: 350px;
+    margin: 12px;
+    min-height: 300px;
   }
-  
+
   .screen-content {
-    padding: 20px;
+    padding: 18px 15px;
   }
-  
+
   .result-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
-  
+
   .result-emoji {
-    font-size: 3rem;
+    font-size: 2.8rem;
+    margin-bottom: 12px;
   }
-  
+
+  .rating-value {
+    font-size: 1.3rem;
+    padding: 6px 12px;
+  }
+
   .comparison-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 12px;
   }
-  
+
   .vs-divider {
     order: 2;
+    font-size: 1rem;
   }
-  
+
   .actual-rent {
     order: 3;
   }
-  
+
+  .comparison-item {
+    padding: 15px 12px;
+  }
+
+  .item-value {
+    font-size: 1.2rem;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 8px;
   }
-  
+
+  .stat-item {
+    padding: 12px;
+  }
+
+  .analysis-feedback {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .feedback-text {
+    font-size: 0.85rem;
+  }
+
   .result-controls {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     text-align: center;
+    padding: 15px 18px;
   }
-  
+
   .continue-btn {
     width: 100%;
+    padding: 14px 24px;
+    min-height: 44px; /* iOS recommended touch target */
   }
-  
+
   .result-statusbar {
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
     text-align: center;
+    padding: 8px 15px;
   }
 }
 
 @media (max-width: 480px) {
+  .result-modal-overlay {
+    padding: 5px;
+  }
+
+  .result-console {
+    width: 100%;
+    border-radius: 12px;
+    border-width: 2px;
+  }
+
+  .console-header {
+    padding: 8px 12px;
+  }
+
+  .header-title {
+    font-size: 0.8rem;
+  }
+
+  .result-screen {
+    margin: 8px;
+  }
+
   .screen-content {
-    padding: 15px;
+    padding: 12px 10px;
   }
-  
-  .comparison-item {
-    padding: 15px;
-  }
-  
-  .item-value {
+
+  .result-title {
     font-size: 1.2rem;
   }
-  
-  .result-title {
-    font-size: 1.3rem;
+
+  .result-emoji {
+    font-size: 2.4rem;
   }
-  
+
+  .rating-value {
+    font-size: 1.1rem;
+    padding: 5px 10px;
+  }
+
+  .comparison-item {
+    padding: 12px 10px;
+  }
+
+  .item-value {
+    font-size: 1.1rem;
+  }
+
+  .item-label {
+    font-size: 0.7rem;
+  }
+
+  .stat-item {
+    padding: 10px;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+
+  .analysis-feedback {
+    padding: 12px;
+  }
+
+  .feedback-text {
+    font-size: 0.8rem;
+  }
+
   .continue-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
+    padding: 12px 20px;
+    font-size: 0.85rem;
+  }
+
+  .result-statusbar {
+    padding: 6px 12px;
+  }
+}
+
+/* Landscape phone optimizations for Result Modal */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+  .result-console {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .result-screen {
+    min-height: 200px;
+  }
+
+  .screen-content {
+    padding: 12px;
+  }
+
+  .result-title {
+    font-size: 1.1rem;
+  }
+
+  .result-emoji {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .comparison-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .vs-divider {
+    order: 2;
+  }
+
+  .actual-rent {
+    order: 3;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analysis-feedback {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .result-controls {
+    padding: 10px 15px;
+  }
+
+  .continue-btn {
+    width: auto;
+    min-width: 120px;
+  }
+}
+
+/* Touch-friendly enhancements for Result Modal */
+@media (hover: none) and (pointer: coarse) {
+  .continue-btn:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  .result-screen {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 }

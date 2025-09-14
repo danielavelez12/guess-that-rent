@@ -420,73 +420,225 @@
   50% { opacity: 1; }
 }
 
-/* Mobile responsiveness */
+/* Enhanced Mobile responsiveness */
 @media (max-width: 768px) {
   .loading-console, .error-console, .complete-console {
-    width: 95%;
-    margin: 10px;
+    width: 98%;
+    max-width: none;
+    margin: 5px;
+    border-width: 3px;
   }
-  
+
+  .loading-header, .error-header, .complete-header {
+    padding: 10px 15px;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+
   .loading-content, .error-content, .complete-content {
-    padding: 25px;
+    padding: 20px 15px;
   }
-  
+
   .loading-title, .error-title, .complete-title {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
   }
-  
+
+  .loading-status, .error-code, .complete-status {
+    font-size: 0.75rem;
+  }
+
+  .loading-screen, .error-screen, .complete-screen {
+    margin: 12px;
+  }
+
   .loading-text, .error-message {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
-  
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+  }
+
+  .error-icon, .complete-icon {
+    font-size: 3.5rem;
+  }
+
   .complete-content h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
-  
+
   .final-stats {
-    padding: 20px;
+    padding: 18px;
+    max-width: 100%;
   }
-  
+
   .stat-row {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    margin-bottom: 12px;
   }
-  
+
   .completion-message {
-    font-size: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 15px 0;
   }
-  
+
+  .completion-actions {
+    gap: 15px;
+  }
+
   .restart-btn {
-    padding: 12px 24px;
-    font-size: 1rem;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    min-height: 44px; /* iOS recommended touch target */
+    min-width: 150px;
+  }
+
+  .retry-btn {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    min-height: 44px;
   }
 }
 
 @media (max-width: 480px) {
-  .loading-content, .error-content, .complete-content {
-    padding: 20px;
+  .loading-console, .error-console, .complete-console {
+    width: 100%;
+    border-radius: 12px;
+    border-width: 2px;
+    margin: 2px;
   }
-  
+
+  .loading-header, .error-header, .complete-header {
+    padding: 8px 12px;
+  }
+
+  .loading-content, .error-content, .complete-content {
+    padding: 15px 12px;
+  }
+
+  .loading-title, .error-title, .complete-title {
+    font-size: 0.8rem;
+  }
+
+  .loading-status, .error-code, .complete-status {
+    font-size: 0.7rem;
+  }
+
+  .loading-screen, .error-screen, .complete-screen {
+    margin: 8px;
+  }
+
+  .loading-text, .error-message {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
   .loading-spinner {
     width: 40px;
     height: 40px;
   }
-  
+
   .error-icon, .complete-icon {
     font-size: 3rem;
   }
-  
-  .final-stats {
-    padding: 15px;
+
+  .complete-content h2 {
+    font-size: 1.2rem;
   }
-  
+
+  .final-stats {
+    padding: 12px;
+  }
+
   .stat-row {
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
     text-align: center;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
   }
-  
+
+  .completion-message {
+    font-size: 0.8rem;
+  }
+
   .restart-btn {
     width: 100%;
+    max-width: 280px;
+    padding: 12px 20px;
+    font-size: 0.8rem;
+  }
+
+  .retry-btn {
+    width: 100%;
+    max-width: 280px;
     padding: 10px 20px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Landscape phone optimizations for GameConsole */
+@media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
+  .loading-console, .error-console, .complete-console {
+    max-height: 95vh;
+    overflow-y: auto;
+  }
+
+  .loading-content, .error-content, .complete-content {
+    padding: 15px;
+  }
+
+  .loading-text, .error-message {
+    font-size: 0.8rem;
+  }
+
+  .complete-content h2 {
+    font-size: 1.1rem;
+  }
+
+  .final-stats {
+    padding: 10px;
+  }
+
+  .stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .completion-message {
+    font-size: 0.75rem;
+    margin: 10px 0;
+  }
+
+  .completion-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .restart-btn, .retry-btn {
+    width: auto;
+    min-width: 120px;
+    padding: 8px 16px;
+  }
+}
+
+/* Touch-friendly enhancements for GameConsole */
+@media (hover: none) and (pointer: coarse) {
+  .restart-btn:active,
+  .retry-btn:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+
+  .loading-screen,
+  .error-screen,
+  .complete-screen {
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
 }

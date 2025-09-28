@@ -8,8 +8,13 @@ interface LeaderboardProps {
   refreshSignal?: number;
 }
 
+interface EnhancedScoreItem extends ScoreItem {
+  displayRank: number;
+  isAI: boolean;
+}
+
 const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSignal }) => {
-  const [scores, setScores] = useState<ScoreItem[]>([]);
+  const [scores, setScores] = useState<EnhancedScoreItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +24,36 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
         const apiUrl = process.env.REACT_APP_API_URL;
         const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/today`);
         const sorted = [...data.scores].sort((a, b) => a.score_value - b.score_value);
-        setScores(sorted.slice(0, 10));
+
+        // Separate AI models from human users
+        const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
+        const aiScores = sorted.filter(score =>
+          aiModels.some(model => score.username.includes(model))
+        );
+        const humanScores = sorted.filter(score =>
+          !aiModels.some(model => score.username.includes(model))
+        );
+
+        // Take top 3 human scores and all AI scores
+        const topHumans = humanScores.slice(0, 3);
+        const displayScores = [...topHumans, ...aiScores];
+
+        // Add rank information and type indicator
+        const rankedScores = displayScores.map((score, index) => {
+          const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
+          const isAI = aiModels.some(model => score.username.includes(model));
+
+          // Find the actual rank in the overall sorted list
+          const actualRank = sorted.findIndex(s => s.id === score.id) + 1;
+
+          return {
+            ...score,
+            displayRank: actualRank,
+            isAI
+          };
+        });
+
+        setScores(rankedScores);
         setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load leaderboard');
@@ -62,10 +96,12 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
             {scores.map((s, idx) => (
               <li
                 key={s.id}
-                className={`leaderboard-item ${highlightUsername && s.username === highlightUsername ? 'highlight' : ''}`}
+                className={`leaderboard-item ${highlightUsername && s.username === highlightUsername ? 'highlight' : ''} ${s.isAI ? 'ai-player' : 'human-player'}`}
               >
-                <span className="rank">#{idx + 1}</span>
-                <span className="name">{s.username}</span>
+                <span className="rank">#{s.displayRank}</span>
+                <span className="name">
+                  {s.isAI ? '🤖 ' : ''}{s.username}
+                </span>
                 <span className="value">{s.score_value}% accuracy</span>
               </li>
             ))}

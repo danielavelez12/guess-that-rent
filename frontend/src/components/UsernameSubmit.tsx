@@ -40,7 +40,7 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
       const apiUrl = process.env.REACT_APP_API_URL;
       const created = await axios.post(`${apiUrl}/users`, { username: usernameInput.trim() });
       const userId: string = created.data.id;
-      await axios.post(`${apiUrl}/scores`, { user_id: userId, score_value: Math.round(avgError) });
+      await axios.post(`${apiUrl}/scores`, { user_id: userId, score_value: Math.max(0, 100 - Math.round(avgError)) });
       onSubmitted(usernameInput.trim());
     } catch (err: any) {
       setError(

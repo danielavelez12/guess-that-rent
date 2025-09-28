@@ -61,12 +61,33 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     const timer = setTimeout(() => {
       if (currentLineIndex >= storyLines.length) return;
       const activeLine = storyLines[currentLineIndex];
+
+      // If current line is blank, check if next line is also blank and combine them
       if (activeLine.length === 0) {
-        setDisplayedText((prev) => prev + '\n');
-        setCurrentLineIndex((prev) => prev + 1);
+        let linesToAdd = '\n';
+        let nextIndex = currentLineIndex + 1;
+
+        // Keep adding empty lines and the next non-empty line if it exists
+        while (nextIndex < storyLines.length && storyLines[nextIndex].length === 0) {
+          linesToAdd += '\n';
+          nextIndex++;
+        }
+
+        // If there's a non-empty line after the empty ones, add it too for speed
+        if (nextIndex < storyLines.length && storyLines[nextIndex].length > 0) {
+          linesToAdd += storyLines[nextIndex] + '\n';
+          setDisplayedText((prev) => prev + linesToAdd);
+          setCurrentLineIndex(nextIndex + 1);
+          setCurrentCharIndex(0);
+          return;
+        }
+
+        setDisplayedText((prev) => prev + linesToAdd);
+        setCurrentLineIndex(nextIndex);
         setCurrentCharIndex(0);
         return;
       }
+
       if (currentCharIndex < activeLine.length) {
         setDisplayedText((prev) => prev + activeLine[currentCharIndex]);
         setCurrentCharIndex((prev) => prev + 1);

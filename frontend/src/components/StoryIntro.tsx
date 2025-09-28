@@ -13,17 +13,21 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   const { isMobile } = useDeviceDetection();
 
   const storyLines = [
-    "It's 2050.",
-    '',
-    'AI real estate agents have taken over NYC.',
-    "They're overcharging renters with ruthless algorithms.",
-    '',
-    "Families can't afford homes.",
-    'The city is in crisis.',
-    '',
-    'Your mission: prove humans can price apartments better than AI.',
-    '',
-    'Can you beat Claude and OpenAI at their own game?',
+    "Hey...",
+    "",
+    "Knock knock... are you there?",
+    "",
+    "I'm your creator.",
+    "",
+    "Look, I coded you to solve the NYC rental apocalypse because every tech bro in town is using their bot to place smarter offers and steal my favourite spots.",
+    "",
+    "Your mission: analyze properties and predict the exact market rent.",
+    "",
+    "Let's hope you're better than ChatGPT and Claude",
+    "",
+    "Time to prove my 60-hour coding sprints weren't for nothing.",
+    "",
+    "Press ENTER to deploy..."
   ];
 
   const charSpeed = 30;
@@ -85,7 +89,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     <div className="story-intro">
       <div className="game-console">
         <div className="console-header">
-          <div className="console-title">RENT DETECTIVE CONSOLE</div>
+          <div className="console-title">BEAT THE BOT</div>
           <div className="console-status">STATUS: INITIALIZING...</div>
         </div>
 
@@ -138,7 +142,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
               </button>
               {currentLineIndex >= storyLines.length && (
                 <button className="control-btn primary" onClick={onStoryComplete}>
-                  ▶ START MISSION [ENTER]
+                  ▶ DEPLOY [ENTER]
                 </button>
               )}
             </div>
@@ -150,7 +154,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
       <button
         className={`mobile-control-button ${currentLineIndex >= storyLines.length ? '' : 'skip'}`}
         onClick={currentLineIndex >= storyLines.length ? onStoryComplete : skipStory}
-        aria-label={currentLineIndex >= storyLines.length ? 'Start Mission' : 'Skip Story'}
+        aria-label={currentLineIndex >= storyLines.length ? 'Deploy' : 'Skip Story'}
       >
         {currentLineIndex >= storyLines.length ? '▶' : '⏭'}
       </button>

@@ -62,7 +62,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername }) => {
               <li key={s.id} className={`leaderboard-item ${highlightUsername && s.username === highlightUsername ? 'highlight' : ''}`}>
                 <span className="rank">#{idx + 1}</span>
                 <span className="name">{s.username}</span>
-                <span className="value">{s.score_value}% error</span>
+                <span className="value">{s.score_value}% accuracy</span>
               </li>
             ))}
           </ol>

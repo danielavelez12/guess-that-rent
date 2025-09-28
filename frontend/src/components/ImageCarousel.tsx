@@ -23,6 +23,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
   const [imageLoadError, setImageLoadError] = useState<Set<number>>(new Set());
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const minSwipeDistance = 50;
 
@@ -69,24 +70,47 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(false);
+    // Prevent scrolling during swipe
+    e.preventDefault();
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (!touchStart) return;
+    
+    const currentTouch = e.targetTouches[0].clientX;
+    setTouchEnd(currentTouch);
+    
+    // Determine if this is a significant drag
+    const distance = Math.abs(touchStart - currentTouch);
+    if (distance > 10) {
+      setIsDragging(true);
+      // Prevent page scrolling during significant drag
+      e.preventDefault();
+    }
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart || !touchEnd) {
+      // Reset touch action
+      setIsDragging(false);
+      return;
+    }
     
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
-    if (isLeftSwipe) {
+    if (isLeftSwipe && validPhotos.length > 1) {
       handleNext();
-    } else if (isRightSwipe) {
+    } else if (isRightSwipe && validPhotos.length > 1) {
       handlePrevious();
     }
+    
+    // Reset state
+    setIsDragging(false);
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
   if (!hasPhotos) {
@@ -167,6 +191,19 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
         {validPhotos.length > 1 && (
           <div className="image-counter">
             {currentIndex + 1} / {validPhotos.length}
+          </div>
+        )}
+        
+        {/* Mobile Swipe Indicator */}
+        {validPhotos.length > 1 && (
+          <div className="swipe-indicator">
+            {validPhotos.map((_, index) => (
+              <div 
+                key={index} 
+                className={`swipe-dot ${index === currentIndex ? 'active' : ''}`}
+                onClick={() => setCurrentIndex(index)}
+              />
+            ))}
           </div>
         )}
       </div>

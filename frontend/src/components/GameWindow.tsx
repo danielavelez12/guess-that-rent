@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './GameWindow.css';
 import ImageCarousel from './ImageCarousel';
+import PropertyDetailsModal from './PropertyDetailsModal';
+import LocationModal from './LocationModal';
+import GuessSlider from './GuessSlider';
+import useDeviceDetection from '../hooks/useDeviceDetection';
 
 interface Photo {
   id: string;
@@ -39,9 +43,16 @@ const GameWindow: React.FC<GameWindowProps> = ({
   onGuessSubmit,
   disabled = false
 }) => {
+  const device = useDeviceDetection();
   const [guess, setGuess] = useState('');
-  // Position map on the right side by default to avoid blocking the numbers
-  const [mapPosition, setMapPosition] = useState({ x: -1, y: 20 }); // -1 means right side
+  
+  // Mobile modal states
+  const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isGuessSliderOpen, setIsGuessSliderOpen] = useState(false);
+  
+  // Desktop dragging states (keep for desktop compatibility)
+  const [mapPosition, setMapPosition] = useState({ x: -1, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const mapRef = useRef<HTMLDivElement>(null);
@@ -54,6 +65,11 @@ const GameWindow: React.FC<GameWindowProps> = ({
     }
     onGuessSubmit(numGuess);
     setGuess('');
+  };
+
+  const handleMobileGuessSubmit = (guessValue: number) => {
+    onGuessSubmit(guessValue);
+    setIsGuessSliderOpen(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -114,15 +130,87 @@ const GameWindow: React.FC<GameWindowProps> = ({
     }
   }, [isDragging, dragOffset]);
 
+  // Mobile Layout
+  if (device.isMobile) {
+    return (
+      <div className="game-window mobile-layout">
+        <div className="mobile-image-container">
+          <ImageCarousel photos={photos} className="mobile-carousel" />
+          
+          {/* Mobile Overlay HUD */}
+          <div className="mobile-overlay-hud">
+            <div className="hud-info">
+              <span className="hud-bedrooms">{bedrooms} BR</span>
+              <span className="hud-bathrooms">{bathrooms} BA</span>
+            </div>
+            <div className="property-counter">
+              {currentProperty}/{totalProperties}
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Control Buttons */}
+        <div className="mobile-controls">
+          <button 
+            className="control-btn property-btn"
+            onClick={() => setIsPropertyModalOpen(true)}
+            title="Property Intel"
+          >
+            📋
+          </button>
+          <button 
+            className="control-btn location-btn"
+            onClick={() => setIsLocationModalOpen(true)}
+            title="Location Data"
+          >
+            📍
+          </button>
+        </div>
+
+        {/* Mobile Guess Button */}
+        <div className="mobile-guess-button">
+          <button 
+            className="guess-btn"
+            onClick={() => setIsGuessSliderOpen(true)}
+            disabled={disabled}
+          >
+            💰 GUESS RENT
+          </button>
+        </div>
+
+        {/* Mobile Modals */}
+        <PropertyDetailsModal
+          isOpen={isPropertyModalOpen}
+          onClose={() => setIsPropertyModalOpen(false)}
+          details={details}
+          bedrooms={bedrooms}
+          bathrooms={bathrooms}
+          propertyName={propertyName}
+        />
+
+        <LocationModal
+          isOpen={isLocationModalOpen}
+          onClose={() => setIsLocationModalOpen(false)}
+          address={address}
+        />
+
+        <GuessSlider
+          isOpen={isGuessSliderOpen}
+          onClose={() => setIsGuessSliderOpen(false)}
+          onGuessSubmit={handleMobileGuessSubmit}
+          disabled={disabled}
+        />
+      </div>
+    );
+  }
+
+  // Desktop Layout (keep existing)
   return (
-    <div className="game-window fullscreen">
+    <div className="game-window desktop-layout fullscreen">
       <div className="window-frame">
-
-
         <div className="window-content">
           {/* Property Images View */}
           <div className="image-viewport">
-            
             <div className="image-container">
               <ImageCarousel photos={photos} className="game-carousel" />
               <div className="image-overlay">
@@ -190,7 +278,6 @@ const GameWindow: React.FC<GameWindowProps> = ({
           </div>
 
           <div className="control-panel">
-            
             <form onSubmit={handleSubmit} className="estimation-form">
               <div className="input-group">
                 <label className="input-label">MONTHLY RENT ESTIMATE:</label>
@@ -216,10 +303,8 @@ const GameWindow: React.FC<GameWindowProps> = ({
                 </div>
               </div>
             </form>
-
           </div>
         </div>
-
       </div>
     </div>
   );

@@ -198,39 +198,45 @@
 /* Enhanced Mobile responsiveness */
 @media (max-width: 768px) {
   .story-intro {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 10px;
   }
 
   .game-console {
-    width: 98%;
+    width: 100%;
     max-width: none;
-    margin: 5px 0;
+    margin: 10px 0;
+    border-radius: 12px;
     border-width: 3px;
+    /* Mobile performance */
+    will-change: auto;
+    transform: translateZ(0);
   }
 
   .console-header {
-    padding: 10px 12px;
+    padding: 12px 16px;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
     text-align: center;
   }
 
   .console-title {
-    font-size: 0.9rem;
+    font-size: 1rem;
     letter-spacing: 1px;
   }
 
   .console-status {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
   .console-screen {
-    margin: 15px;
+    margin: 12px;
   }
 
   .screen-content {
-    padding: 20px 15px;
-    min-height: 280px;
+    padding: 20px 16px;
+    min-height: 250px;
   }
 
   .terminal-text {
@@ -240,6 +246,7 @@
 
   .terminal-line {
     margin-bottom: 6px;
+    min-height: 1.5em;
   }
 
   .continue-prompt {
@@ -252,7 +259,7 @@
   }
 
   .console-controls {
-    padding: 15px;
+    padding: 16px;
   }
 
   .control-section {
@@ -262,62 +269,68 @@
   }
 
   .control-buttons {
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
+    width: 100%;
   }
 
   .control-btn {
-    padding: 10px 16px;
-    font-size: 0.8rem;
-    min-height: 44px; /* iOS recommended touch target */
-    min-width: 120px;
+    padding: 14px 20px;
+    font-size: 0.85rem;
+    min-height: 48px; /* Touch-friendly */
+    width: 100%;
+    border-radius: 10px;
   }
 
-  .control-btn:active {
-    transform: scale(0.98);
+  /* Hide desktop controls and show mobile button on mobile */
+  .console-controls {
+    display: none;
+  }
+
+  .continue-prompt {
+    display: none;
+  }
+
+  .mobile-control-button {
+    display: flex;
+  }
+
+  .terminal-text.mobile-segment {
+    font-size: 1.15rem;
   }
 }
 
 @media (max-width: 480px) {
-  .story-intro {
-    padding: 5px;
-  }
-
   .game-console {
-    width: 100%;
-    border-radius: 12px;
+    border-radius: 8px;
     border-width: 2px;
+    margin: 5px 0;
   }
 
   .console-header {
-    padding: 8px 10px;
+    padding: 10px 12px;
   }
 
   .console-title {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .console-status {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
   }
 
   .console-screen {
-    margin: 10px;
+    margin: 8px;
   }
 
   .screen-content {
-    padding: 15px 12px;
-    min-height: 240px;
+    padding: 16px 12px;
+    min-height: 200px;
   }
 
   .terminal-text {
     font-size: 0.85rem;
     line-height: 1.4;
-  }
-
-  .terminal-line {
-    margin-bottom: 5px;
   }
 
   .continue-prompt {
@@ -334,23 +347,94 @@
   }
 
   .control-btn {
-    padding: 12px 20px;
-    font-size: 0.75rem;
-    width: 100%;
-    max-width: 200px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    min-height: 44px;
+  }
+
+  /* Hide desktop controls and show mobile button on small mobile */
+  .console-controls {
+    display: none;
+  }
+
+  .continue-prompt {
+    display: none;
+  }
+
+  .mobile-control-button {
+    display: flex;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
   }
 }
 
-/* Landscape phone optimizations */
+/* Mobile floating control button */
+.mobile-control-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(45deg, #0066cc, #0088ff);
+  border: 3px solid #00aaff;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: none; /* Hidden by default, shown on mobile */
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 4px 20px rgba(0, 136, 255, 0.4),
+    0 0 30px rgba(0, 170, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.mobile-control-button:hover {
+  background: linear-gradient(45deg, #0088ff, #00aaff);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 
+    0 8px 30px rgba(0, 136, 255, 0.6),
+    0 0 40px rgba(0, 170, 255, 0.5);
+}
+
+.mobile-control-button:active {
+  transform: translateY(-1px) scale(0.95);
+  box-shadow: 
+    0 4px 15px rgba(0, 136, 255, 0.8),
+    0 0 25px rgba(0, 170, 255, 0.7);
+}
+
+.mobile-control-button.skip {
+  background: linear-gradient(45deg, #333, #555);
+  border-color: #666;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.mobile-control-button.skip:hover {
+  background: linear-gradient(45deg, #555, #777);
+  border-color: #888;
+}
+
+/* Landscape mobile optimization */
 @media (max-width: 896px) and (max-height: 414px) and (orientation: landscape) {
   .game-console {
-    max-height: 90vh;
+    max-height: 95vh;
     overflow-y: auto;
   }
 
   .screen-content {
-    min-height: 180px;
     padding: 12px;
+    min-height: 150px;
   }
 
   .terminal-text {
@@ -374,19 +458,16 @@
 
   .control-btn {
     width: auto;
-    min-width: 100px;
-    padding: 8px 12px;
-  }
-}
-
-/* Touch-friendly enhancements */
-@media (hover: none) and (pointer: coarse) {
-  .control-btn:active {
-    transform: scale(0.95);
-    transition: transform 0.1s ease;
+    min-width: 120px;
+    padding: 8px 16px;
+    font-size: 0.75rem;
   }
 
-  .console-screen {
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  .mobile-control-button {
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    font-size: 20px;
   }
 }

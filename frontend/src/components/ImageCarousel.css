@@ -25,6 +25,13 @@
   width: 100%;
   height: 400px;
   overflow: hidden;
+  /* Mobile performance optimizations */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Smooth hardware acceleration */
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* Fullscreen carousel container fills viewport */
@@ -51,6 +58,13 @@
   height: 100%;
   object-fit: cover;
   transition: opacity 0.3s ease;
+  /* Mobile performance optimizations */
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Better image rendering */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .carousel-image:hover {
@@ -323,34 +337,74 @@
   }
 }
 
-/* Touch gesture improvements */
+/* Hide carousel arrows on mobile/touch devices */
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+  .carousel-arrow {
+    display: none !important;
+  }
+}
+
+/* Enhanced touch gesture improvements */
 @media (hover: none) and (pointer: coarse) {
   .carousel-container {
     -webkit-overflow-scrolling: touch;
+    /* Better touch responsiveness */
+    touch-action: pan-x;
+    will-change: transform;
   }
 
   .carousel-arrow:active {
     transition: transform 0.1s ease;
+    transform: translateY(-50%) scale(0.95);
+    filter: brightness(1.2);
   }
 
-  /* Add touch indication */
+  /* Enhanced touch indication with better visibility */
   .fullscreen-carousel::after {
-    content: '';
+    content: '← Swipe to navigate →';
     position: absolute;
-    bottom: 120px;
+    bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 2px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
     z-index: 50;
-    animation: swipeHint 3s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: swipeHint 4s ease-in-out infinite;
+    pointer-events: none;
   }
 
   @keyframes swipeHint {
-    0%, 100% { opacity: 0; width: 40px; }
-    50% { opacity: 0.7; width: 80px; }
+    0%, 20%, 80%, 100% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    30%, 70% { opacity: 0.9; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* Touch ripple effect */
+  .carousel-arrow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .carousel-arrow:active::after {
+    width: 100px;
+    height: 100px;
+    opacity: 1;
   }
 }
 
@@ -439,4 +493,69 @@
   color: #00ffff;
   border: 1px solid #333;
   text-shadow: 0 0 5px #00ffff;
+}
+
+/* Mobile Swipe Indicator Dots */
+.swipe-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.swipe-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.swipe-dot.active {
+  background: #00ff88;
+  box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  border-color: #00ff88;
+  transform: scale(1.2);
+}
+
+.swipe-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
+}
+
+/* Hide dots on desktop (arrows are sufficient) */
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  .swipe-indicator {
+    display: none;
+  }
+}
+
+/* Hide indicators on mobile carousel for cleaner look */
+.mobile-carousel .swipe-indicator,
+.mobile-carousel .image-counter {
+  display: none;
+}
+
+/* Game carousel specific dots */
+.game-carousel .swipe-indicator {
+  bottom: 30px;
+}
+
+/* Mobile optimizations for dots */
+@media (max-width: 768px) {
+  .swipe-dot {
+    width: 10px;
+    height: 10px;
+    /* Larger touch targets */
+  }
+  
+  .swipe-indicator {
+    gap: 12px;
+  }
 }

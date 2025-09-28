@@ -4,6 +4,7 @@ import { Listing, ListingsResponse } from "../types";
 import StoryIntro from "./StoryIntro";
 import GameWindow from "./GameWindow";
 import ResultModal from "./ResultModal";
+import Leaderboard from "./Leaderboard";
 import "./GameConsole.css";
 
 interface GuessResult {
@@ -30,6 +31,12 @@ const GameConsole: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [guessResult, setGuessResult] = useState<GuessResult | null>(null);
   const [score, setScore] = useState<number[]>([]);
+  const isLocal = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '0.0.0.0'
+  );
+  const skipToComplete = () => setGameState(GameState.COMPLETE);
 
   useEffect(() => {
     const loadListings = async () => {
@@ -115,10 +122,16 @@ const GameConsole: React.FC = () => {
   // Render based on game state
   switch (gameState) {
     case GameState.STORY:
-      return <StoryIntro onStoryComplete={handleStoryComplete} />;
+      return <>
+        <StoryIntro onStoryComplete={handleStoryComplete} />
+        {isLocal && (
+          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
+        )}
+      </>;
 
     case GameState.LOADING:
       return (
+        <>
         <div className="game-console-loading">
           <div className="loading-console">
             <div className="loading-header">
@@ -140,10 +153,15 @@ const GameConsole: React.FC = () => {
             </div>
           </div>
         </div>
+        {isLocal && (
+          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
+        )}
+        </>
       );
 
     case GameState.ERROR:
       return (
+        <>
         <div className="game-console-error">
           <div className="error-console">
             <div className="error-header">
@@ -166,6 +184,10 @@ const GameConsole: React.FC = () => {
             </div>
           </div>
         </div>
+        {isLocal && (
+          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
+        )}
+        </>
       );
 
     case GameState.PLAYING:
@@ -188,6 +210,7 @@ const GameConsole: React.FC = () => {
       const photos = currentListing.fields.Photos || [];
 
       return (
+        <>
         <div className="game-console-background">
           <GameWindow
             photos={photos}
@@ -201,10 +224,15 @@ const GameConsole: React.FC = () => {
             onGuessSubmit={handleGuessSubmit}
           />
         </div>
+        {isLocal && (
+          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
+        )}
+        </>
       );
 
     case GameState.RESULT:
       return (
+        <>
         <div className="game-console-background">
           <GameWindow
             photos={listings[currentIndex].fields.Photos || []}
@@ -226,6 +254,10 @@ const GameConsole: React.FC = () => {
             />
           )}
         </div>
+        {isLocal && (
+          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
+        )}
+        </>
       );
 
     case GameState.COMPLETE:
@@ -256,6 +288,10 @@ const GameConsole: React.FC = () => {
                       {getOverallGrade()}
                     </span>
                   </div>
+                </div>
+
+                <div style={{ marginTop: 20, marginBottom: 20 }}>
+                  <Leaderboard />
                 </div>
 
                 <div className="completion-message">

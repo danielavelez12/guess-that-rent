@@ -8,6 +8,27 @@
   font-family: 'Courier New', monospace;
 }
 
+.dev-skip-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 2000;
+  background: linear-gradient(45deg, #444, #777);
+  color: #fff;
+  border: 2px solid #999;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(255,255,255,0.15);
+}
+
+.dev-skip-btn:hover {
+  filter: brightness(1.1);
+}
+
 /* Allow scrolling on mobile for game background */
 @media (max-width: 768px) {
   .game-console-background {

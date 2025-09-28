@@ -12,7 +12,7 @@ pip install -r requirements.txt
 2. Set up environment variables:
 ```bash
 cp .env.example .env
-# Edit .env with your Airtable credentials
+# Edit .env with your Airtable credentials and database URL
 ```
 
 3. Run the server:
@@ -26,11 +26,15 @@ python main.py
 - `AIRTABLE_TABLE_NAME`: Your table name (default: "Listings")
 - `AIRTABLE_API_KEY`: Your Airtable API key
 - `PORT`: Server port (default: 8000)
+- `DATABASE_URL`: SQLAlchemy URL to your Postgres database
 
 ## API Endpoints
 
 - `GET /`: Health check
 - `GET /listings`: Fetch all listings from Airtable
+- `POST /users`: Create a new user
+- `POST /scores`: Create a new score for a user
+- `GET /scores/today`: Get all scores created today (Eastern Time)
 
 ## Deployment on Render
 

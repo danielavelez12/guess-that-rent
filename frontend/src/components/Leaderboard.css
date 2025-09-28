@@ -1,0 +1,78 @@
+.leaderboard {
+  background: #0d0d19;
+  border: 2px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 25px rgba(0, 200, 255, 0.15);
+}
+
+.leaderboard-header {
+  background: linear-gradient(90deg, #13132b, #1e1e3a);
+  color: #00ffff;
+  font-weight: bold;
+  letter-spacing: 2px;
+  padding: 14px 18px;
+  border-bottom: 1px solid #2a2a44;
+  text-align: center;
+}
+
+.leaderboard-body {
+  padding: 12px;
+}
+
+.leaderboard-loading,
+.leaderboard-error,
+.leaderboard-empty {
+  color: #bbb;
+  text-align: center;
+  padding: 20px 8px;
+}
+
+.leaderboard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.leaderboard-item {
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #1f1f33;
+  color: #e6faff;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item .rank {
+  color: #00aaff;
+  font-weight: bold;
+  text-shadow: 0 0 6px rgba(0, 170, 255, 0.6);
+}
+
+.leaderboard-item .name {
+  font-weight: 600;
+}
+
+.leaderboard-item .value {
+  color: #88ffaa;
+  font-weight: bold;
+}
+
+.leaderboard-item.highlight {
+  background: rgba(0, 255, 170, 0.08);
+  border-left: 3px solid #00ffaa;
+}
+
+@media (max-width: 768px) {
+  .leaderboard-item {
+    grid-template-columns: 40px 1fr auto;
+    padding: 10px;
+  }
+}
+
+

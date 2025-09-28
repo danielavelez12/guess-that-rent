@@ -1,8 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, String, DateTime, func, Integer, ForeignKey
+from sqlalchemy.orm import sessionmaker, declarative_base, Mapped, mapped_column, Session
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.exc import IntegrityError
+from pydantic import BaseModel
+from zoneinfo import ZoneInfo
+import uuid
+import datetime
 
 # Load environment variables
 load_dotenv()
@@ -24,6 +32,47 @@ AIRTABLE_TABLE_NAME = os.getenv("AIRTABLE_TABLE_NAME", "Listings")
 AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
 
 AIRTABLE_URL = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL) if DATABASE_URL else None
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
+    ip_address: Mapped[str] = mapped_column(String, nullable=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+class CreateUserRequest(BaseModel):
+    username: str
+
+class Score(Base):
+    __tablename__ = "score"
+    id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    score_value: Mapped[int] = mapped_column(Integer, nullable=False)
+
+class CreateScoreRequest(BaseModel):
+    user_id: uuid.UUID
+    score_value: int
+
+def get_db():
+    if SessionLocal is None:
+        raise HTTPException(status_code=500, detail="DATABASE_URL not configured")
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.on_event("startup")
+def on_startup():
+    if engine is None:
+        return
+    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 async def root():
@@ -79,6 +128,65 @@ async def get_listings():
             status_code=500,
             detail=f"An unexpected error occurred: {str(e)}"
         )
+
+@app.post("/users")
+async def create_user(payload: CreateUserRequest, request: Request, db: Session = Depends(get_db)):
+    client_host = request.client.host if request.client else ""
+    user = User(username=payload.username, ip_address=client_host)
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409, detail="Username already exists")
+    return {
+        "id": str(user.id),
+        "username": user.username,
+        "ip_address": user.ip_address,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+    }
+
+@app.get("/scores/today")
+async def get_today_scores(db: Session = Depends(get_db)):
+    now_et = datetime.datetime.now(ZoneInfo("America/New_York"))
+    start_et = now_et.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_et = start_et + datetime.timedelta(days=1)
+    start_utc = start_et.astimezone(datetime.timezone.utc)
+    end_utc = end_et.astimezone(datetime.timezone.utc)
+    rows = (
+        db.query(Score, User.username)
+        .join(User, Score.user_id == User.id)
+        .filter(Score.created_at >= start_utc, Score.created_at < end_utc)
+        .order_by(Score.created_at.desc())
+        .all()
+    )
+    items = []
+    for s, username in rows:
+        items.append({
+            "id": str(s.id),
+            "user_id": str(s.user_id),
+            "username": username,
+            "score_value": s.score_value,
+            "created_at": s.created_at.isoformat() if s.created_at else None,
+        })
+    return {"success": True, "count": len(items), "scores": items}
+
+@app.post("/scores")
+async def create_score(payload: CreateScoreRequest, db: Session = Depends(get_db)):
+    user = db.get(User, payload.user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    score = Score(user_id=payload.user_id, score_value=payload.score_value)
+    db.add(score)
+    db.commit()
+    db.refresh(score)
+    return {
+        "id": str(score.id),
+        "user_id": str(score.user_id),
+        "score_value": score.score_value,
+        "created_at": score.created_at.isoformat() if score.created_at else None,
+    }
 
 if __name__ == "__main__":
     import uvicorn

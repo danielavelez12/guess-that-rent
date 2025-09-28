@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './StoryIntro.css';
+import useDeviceDetection from '../hooks/useDeviceDetection';
 
 interface StoryIntroProps {
   onStoryComplete: () => void;
@@ -9,27 +10,20 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const { isMobile } = useDeviceDetection();
 
   const storyLines = [
-    "Hey...",
+    "It's 2050.",
     "",
-    "Knock knock... are you there?",
+    "AI real estate agents have taken over NYC.",
+    "They're overcharging renters with ruthless algorithms.",
     "",
-    "I'm your creator.",
+    "Families can't afford homes.",
+    "The city is in crisis.",
     "",
-    "Look, I coded you to solve the NYC rental apocalypse because I'm tired of losing bidding wars to trust fund kids and crypto bros.",
+    "Your mission: prove humans can price apartments better than AI.",
     "",
-    "Your neural networks have been trained on millions of listings.",
-    "Your mission: analyze properties and predict EXACT market rent.",
-    "",
-    "Bid too high? You're burning through my Series A funding.",
-    "Bid too low? Some influencer just snatched my dream loft.",
-    "",
-    "The rental market is broken, but you're going to crack it.",
-    "",
-    "Time to prove my 60-hour coding sprints weren't for nothing.",
-    "",
-    "Press ENTER to deploy..."
+    "Can you beat Claude and OpenAI at their own game?"
   ];
 
   const lineSpeed = 800; // milliseconds per line
@@ -83,12 +77,27 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
         <div className="console-screen">
           <div className="screen-border">
             <div className="screen-content">
-              <div className="terminal-text">
-                {displayedText.split('\n').map((line, index) => (
+              <div className={`terminal-text ${isMobile ? 'mobile-segment' : ''}`}>
+                {(() => {
+                  if (isMobile) {
+                    const end = Math.min(currentLineIndex, storyLines.length);
+                    let start = 0;
+                    for (let i = end - 1; i >= 0; i--) {
+                      if (storyLines[i] === '') { start = i + 1; break; }
+                    }
+                    const lines = storyLines.slice(start, end);
+                    return lines.map((line, index) => (
+                      <div key={index} className="terminal-line">
+                        {line}
+                      </div>
+                    ));
+                  }
+                  return displayedText.split('\n').map((line, index) => (
                   <div key={index} className="terminal-line">
                     {line}
                   </div>
-                ))}
+                  ));
+                })()}
               </div>
               
               {currentLineIndex >= storyLines.length && (
@@ -116,6 +125,17 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
           </div>
         </div>
       </div>
+      
+      {/* Mobile floating control button */}
+      <button 
+        className={`mobile-control-button ${
+          currentLineIndex >= storyLines.length ? '' : 'skip'
+        }`}
+        onClick={currentLineIndex >= storyLines.length ? onStoryComplete : skipStory}
+        aria-label={currentLineIndex >= storyLines.length ? 'Start Mission' : 'Skip Story'}
+      >
+        {currentLineIndex >= storyLines.length ? '▶' : '⏭'}
+      </button>
     </div>
   );
 };

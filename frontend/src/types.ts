@@ -9,3 +9,17 @@ export interface ListingsResponse {
   count: number;
   listings: Listing[];
 }
+
+export interface ScoreItem {
+  id: string;
+  user_id: string;
+  username: string;
+  score_value: number;
+  created_at: string | null;
+}
+
+export interface ScoreTodayResponse {
+  success: boolean;
+  count: number;
+  scores: ScoreItem[];
+}

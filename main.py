@@ -46,8 +46,9 @@ async def get_listings():
     }
     
     try:
-        # Fetch all records from Airtable
-        response = requests.get(AIRTABLE_URL, headers=headers)
+        # Fetch first 3 records from Airtable (default view order)
+        params = {"maxRecords": 3}
+        response = requests.get(AIRTABLE_URL, headers=headers, params=params)
         response.raise_for_status()
         
         data = response.json()

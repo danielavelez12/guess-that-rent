@@ -60,7 +60,10 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
         ) : (
           <ol className="leaderboard-list">
             {scores.map((s, idx) => (
-              <li key={s.id} className={`leaderboard-item ${highlightUsername && s.username === highlightUsername ? 'highlight' : ''}`}>
+              <li
+                key={s.id}
+                className={`leaderboard-item ${highlightUsername && s.username === highlightUsername ? 'highlight' : ''}`}
+              >
                 <span className="rank">#{idx + 1}</span>
                 <span className="name">{s.username}</span>
                 <span className="value">{s.score_value}% accuracy</span>
@@ -74,5 +77,3 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
 };
 
 export default Leaderboard;
-
-

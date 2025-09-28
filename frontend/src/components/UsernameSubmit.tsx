@@ -7,7 +7,7 @@ interface UsernameSubmitProps {
 }
 
 const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }) => {
-  const [usernameInput, setUsernameInput] = useState("");
+  const [usernameInput, setUsernameInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +22,10 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
       await axios.post(`${apiUrl}/scores`, { user_id: userId, score_value: Math.round(avgError) });
       onSubmitted(usernameInput.trim());
     } catch (err: any) {
-      setError(err?.response?.data?.detail || (err instanceof Error ? err.message : 'Failed to submit score'));
+      setError(
+        err?.response?.data?.detail ||
+          (err instanceof Error ? err.message : 'Failed to submit score'),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -55,5 +58,3 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
 };
 
 export default UsernameSubmit;
-
-

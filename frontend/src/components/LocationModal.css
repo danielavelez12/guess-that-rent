@@ -25,7 +25,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 
+  box-shadow:
     0 20px 40px rgba(0, 255, 136, 0.2),
     0 0 0 1px rgba(0, 255, 136, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
@@ -109,17 +109,21 @@
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { 
-    transform: translateY(30px); 
+  from {
+    transform: translateY(30px);
     opacity: 0;
   }
-  to { 
-    transform: translateY(0); 
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -131,25 +135,25 @@
     height: 85vh;
     max-height: 85vh;
   }
-  
+
   .modal-header {
     padding: 16px 20px;
   }
-  
+
   .modal-title {
     font-size: 16px;
   }
-  
+
   .modal-close-btn {
     width: 32px;
     height: 32px;
     font-size: 20px;
   }
-  
+
   .address-info {
     padding: 20px;
   }
-  
+
   .address-text {
     font-size: 16px;
     line-height: 1.4;

@@ -16,7 +16,7 @@ const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
   details,
   bedrooms,
   bathrooms,
-  propertyName
+  propertyName,
 }) => {
   if (!isOpen) return null;
 
@@ -35,7 +35,7 @@ const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
             ✕
           </button>
         </div>
-        
+
         <div className="modal-content">
           <div className="property-overview">
             <h4>{propertyName}</h4>
@@ -50,7 +50,7 @@ const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
               </div>
             </div>
           </div>
-          
+
           {details && (
             <div className="property-details">
               <h5>Details</h5>

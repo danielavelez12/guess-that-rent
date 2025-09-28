@@ -14,16 +14,16 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
 
   const storyLines = [
     "It's 2050.",
-    "",
-    "AI real estate agents have taken over NYC.",
+    '',
+    'AI real estate agents have taken over NYC.',
     "They're overcharging renters with ruthless algorithms.",
-    "",
+    '',
     "Families can't afford homes.",
-    "The city is in crisis.",
-    "",
-    "Your mission: prove humans can price apartments better than AI.",
-    "",
-    "Can you beat Claude and OpenAI at their own game?"
+    'The city is in crisis.',
+    '',
+    'Your mission: prove humans can price apartments better than AI.',
+    '',
+    'Can you beat Claude and OpenAI at their own game?',
   ];
 
   const charSpeed = 30;
@@ -36,13 +36,16 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     setCurrentCharIndex(0);
   }, [storyLines]);
 
-  const handleKeyPress = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Enter' && currentLineIndex >= storyLines.length) {
-      onStoryComplete();
-    } else if (e.key === ' ' || e.key === 'Escape') {
-      skipStory();
-    }
-  }, [currentLineIndex, storyLines.length, onStoryComplete, skipStory]);
+  const handleKeyPress = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && currentLineIndex >= storyLines.length) {
+        onStoryComplete();
+      } else if (e.key === ' ' || e.key === 'Escape') {
+        skipStory();
+      }
+    },
+    [currentLineIndex, storyLines.length, onStoryComplete, skipStory],
+  );
 
   useEffect(() => {
     if (currentLineIndex >= storyLines.length) return;
@@ -55,18 +58,18 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
       if (currentLineIndex >= storyLines.length) return;
       const activeLine = storyLines[currentLineIndex];
       if (activeLine.length === 0) {
-        setDisplayedText(prev => prev + '\n');
-        setCurrentLineIndex(prev => prev + 1);
+        setDisplayedText((prev) => prev + '\n');
+        setCurrentLineIndex((prev) => prev + 1);
         setCurrentCharIndex(0);
         return;
       }
       if (currentCharIndex < activeLine.length) {
-        setDisplayedText(prev => prev + activeLine[currentCharIndex]);
-        setCurrentCharIndex(prev => prev + 1);
+        setDisplayedText((prev) => prev + activeLine[currentCharIndex]);
+        setCurrentCharIndex((prev) => prev + 1);
         return;
       }
-      setDisplayedText(prev => prev + '\n');
-      setCurrentLineIndex(prev => prev + 1);
+      setDisplayedText((prev) => prev + '\n');
+      setCurrentLineIndex((prev) => prev + 1);
       setCurrentCharIndex(0);
     }, delay);
 
@@ -85,7 +88,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
           <div className="console-title">RENT DETECTIVE CONSOLE</div>
           <div className="console-status">STATUS: INITIALIZING...</div>
         </div>
-        
+
         <div className="console-screen">
           <div className="screen-border">
             <div className="screen-content">
@@ -95,9 +98,13 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
                     const allLines = displayedText.split('\n');
                     let start = 0;
                     for (let i = allLines.length - 2; i >= 0; i--) {
-                      if (allLines[i] === '') { start = i + 1; break; }
+                      if (allLines[i] === '') {
+                        start = i + 1;
+                        break;
+                      }
                     }
-                    const endIndex = allLines[allLines.length - 1] === '' ? allLines.length - 1 : allLines.length;
+                    const endIndex =
+                      allLines[allLines.length - 1] === '' ? allLines.length - 1 : allLines.length;
                     const lines = allLines.slice(start, endIndex);
                     return lines.map((line, index) => (
                       <div key={index} className="terminal-line">
@@ -106,13 +113,13 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
                     ));
                   }
                   return displayedText.split('\n').map((line, index) => (
-                  <div key={index} className="terminal-line">
-                    {line}
-                  </div>
+                    <div key={index} className="terminal-line">
+                      {line}
+                    </div>
                   ));
                 })()}
               </div>
-              
+
               {currentLineIndex >= storyLines.length && (
                 <div className="continue-prompt">
                   <span className="blink">▶ PRESS ENTER TO CONTINUE ◀</span>
@@ -127,23 +134,21 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
             <div className="control-label">CONTROLS</div>
             <div className="control-buttons">
               <button className="control-btn" onClick={skipStory}>
-                ⏭  SKIP [SPACE]
+                ⏭ SKIP [SPACE]
               </button>
               {currentLineIndex >= storyLines.length && (
                 <button className="control-btn primary" onClick={onStoryComplete}>
-                  ▶  START MISSION [ENTER]
+                  ▶ START MISSION [ENTER]
                 </button>
               )}
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* Mobile floating control button */}
-      <button 
-        className={`mobile-control-button ${
-          currentLineIndex >= storyLines.length ? '' : 'skip'
-        }`}
+      <button
+        className={`mobile-control-button ${currentLineIndex >= storyLines.length ? '' : 'skip'}`}
         onClick={currentLineIndex >= storyLines.length ? onStoryComplete : skipStory}
         aria-label={currentLineIndex >= storyLines.length ? 'Start Mission' : 'Skip Story'}
       >

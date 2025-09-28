@@ -41,16 +41,16 @@ const GameWindow: React.FC<GameWindowProps> = ({
   currentProperty,
   totalProperties,
   onGuessSubmit,
-  disabled = false
+  disabled = false,
 }) => {
   const device = useDeviceDetection();
   const [guess, setGuess] = useState('');
-  
+
   // Mobile modal states
   const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isGuessSliderOpen, setIsGuessSliderOpen] = useState(false);
-  
+
   // Desktop dragging states (keep for desktop compatibility)
   const [mapPosition, setMapPosition] = useState({ x: -1, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
@@ -83,11 +83,11 @@ const GameWindow: React.FC<GameWindowProps> = ({
     if (mapRef.current) {
       const rect = mapRef.current.getBoundingClientRect();
       const containerRect = mapRef.current.parentElement?.getBoundingClientRect();
-      
+
       if (containerRect) {
         setDragOffset({
           x: e.clientX - rect.left,
-          y: e.clientY - rect.top
+          y: e.clientY - rect.top,
         });
         setIsDragging(true);
       }
@@ -100,14 +100,14 @@ const GameWindow: React.FC<GameWindowProps> = ({
       if (containerRect) {
         const newX = e.clientX - containerRect.left - dragOffset.x;
         const newY = e.clientY - containerRect.top - dragOffset.y;
-        
+
         // Keep map within bounds - updated for smaller size
         const maxX = containerRect.width - 350; // smaller map width
         const maxY = containerRect.height - 280; // smaller map height
-        
+
         setMapPosition({
           x: Math.max(0, Math.min(newX, maxX)),
-          y: Math.max(0, Math.min(newY, maxY))
+          y: Math.max(0, Math.min(newY, maxY)),
         });
       }
     }
@@ -122,7 +122,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      
+
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
@@ -136,7 +136,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
       <div className="game-window mobile-layout">
         <div className="mobile-image-container">
           <ImageCarousel photos={photos} className="mobile-carousel" />
-          
+
           {/* Mobile Overlay HUD */}
           <div className="mobile-overlay-hud">
             <div className="hud-info">
@@ -151,14 +151,14 @@ const GameWindow: React.FC<GameWindowProps> = ({
 
         {/* Mobile Control Buttons */}
         <div className="mobile-controls">
-          <button 
+          <button
             className="control-btn property-btn"
             onClick={() => setIsPropertyModalOpen(true)}
             title="Property Intel"
           >
             📋
           </button>
-          <button 
+          <button
             className="control-btn location-btn"
             onClick={() => setIsLocationModalOpen(true)}
             title="Location Data"
@@ -169,7 +169,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
 
         {/* Mobile Guess Button */}
         <div className="mobile-guess-button">
-          <button 
+          <button
             className="guess-btn"
             onClick={() => setIsGuessSliderOpen(true)}
             disabled={disabled}
@@ -239,20 +239,17 @@ const GameWindow: React.FC<GameWindowProps> = ({
               )}
 
               {/* Floating Map Viewbox - Always Open */}
-              <div 
+              <div
                 ref={mapRef}
                 className={`floating-map-container ${isDragging ? 'dragging' : ''}`}
                 style={{
                   left: mapPosition.x === -1 ? 'auto' : `${mapPosition.x}px`,
                   right: mapPosition.x === -1 ? '20px' : 'auto',
                   top: `${mapPosition.y}px`,
-                  bottom: 'auto'
+                  bottom: 'auto',
                 }}
               >
-                <div 
-                  className="floating-map-header"
-                  onMouseDown={handleMouseDown}
-                >
+                <div className="floating-map-header" onMouseDown={handleMouseDown}>
                   <span className="floating-map-title">LOCATION DATA</span>
                   <div className="floating-map-controls">
                     <span className="drag-handle">⋮⋮</span>
@@ -261,7 +258,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
                 <div className="floating-map-content">
                   <iframe
                     src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                      address
+                      address,
                     )}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                     width="100%"
                     height="100%"
@@ -293,11 +290,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
                     disabled={disabled}
                     className="rent-estimation-input"
                   />
-                  <button 
-                    type="submit" 
-                    disabled={disabled || !guess}
-                    className="submit-btn"
-                  >
+                  <button type="submit" disabled={disabled || !guess} className="submit-btn">
                     SUBMIT ANALYSIS
                   </button>
                 </div>

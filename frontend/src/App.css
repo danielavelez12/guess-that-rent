@@ -69,7 +69,8 @@ html {
 
 /* Only hide overflow on larger screens */
 @media (min-width: 769px) {
-  body, html {
+  body,
+  html {
     overflow: hidden;
   }
 }
@@ -96,20 +97,20 @@ html {
 @media screen and (max-width: 768px) {
   select,
   textarea,
-  input[type="text"],
-  input[type="password"],
-  input[type="datetime"],
-  input[type="datetime-local"],
-  input[type="date"],
-  input[type="month"],
-  input[type="time"],
-  input[type="week"],
-  input[type="number"],
-  input[type="email"],
-  input[type="url"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="color"] {
+  input[type='text'],
+  input[type='password'],
+  input[type='datetime'],
+  input[type='datetime-local'],
+  input[type='date'],
+  input[type='month'],
+  input[type='time'],
+  input[type='week'],
+  input[type='number'],
+  input[type='email'],
+  input[type='url'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='color'] {
     font-size: 16px !important; /* Prevents zoom on iOS */
   }
 }
@@ -128,7 +129,9 @@ html {
   .carousel-arrow {
     cursor: pointer;
     /* Add subtle touch feedback */
-    transition: transform 0.1s ease, opacity 0.1s ease;
+    transition:
+      transform 0.1s ease,
+      opacity 0.1s ease;
   }
 
   button:active,

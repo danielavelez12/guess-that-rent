@@ -1,8 +1,8 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Listing, ListingsResponse } from "../types";
-import "./GameContainer.css";
-import ImageCarousel from "./ImageCarousel";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Listing, ListingsResponse } from '../types';
+import './GameContainer.css';
+import ImageCarousel from './ImageCarousel';
 
 interface GuessResult {
   userGuess: number;
@@ -17,7 +17,7 @@ const GameContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [guess, setGuess] = useState("");
+  const [guess, setGuess] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [guessResult, setGuessResult] = useState<GuessResult | null>(null);
   const [gameComplete, setGameComplete] = useState(false);
@@ -26,15 +26,11 @@ const GameContainer: React.FC = () => {
     const loadListings = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
-        const response = await axios.get<ListingsResponse>(
-          `${apiUrl}/listings`
-        );
+        const response = await axios.get<ListingsResponse>(`${apiUrl}/listings`);
         setListings(response.data.listings);
         setLoading(false);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load listings"
-        );
+        setError(err instanceof Error ? err.message : 'Failed to load listings');
         setLoading(false);
       }
     };
@@ -47,12 +43,12 @@ const GameContainer: React.FC = () => {
 
     const userGuess = parseInt(guess);
     if (isNaN(userGuess) || userGuess <= 0) {
-      alert("Please enter a valid positive number");
+      alert('Please enter a valid positive number');
       return;
     }
 
     const currentListing = listings[currentIndex];
-    const actualRent = currentListing.fields["Rent Price"];
+    const actualRent = currentListing.fields['Rent Price'];
     const difference = Math.abs(userGuess - actualRent);
     const percentageDiff = Math.round((difference / actualRent) * 100);
 
@@ -66,7 +62,7 @@ const GameContainer: React.FC = () => {
 
     setGuessResult(result);
     setShowResult(true);
-    setGuess("");
+    setGuess('');
   };
 
   const handleNextListing = () => {
@@ -85,7 +81,7 @@ const GameContainer: React.FC = () => {
     setGameComplete(false);
     setShowResult(false);
     setGuessResult(null);
-    setGuess("");
+    setGuess('');
   };
 
   if (loading) {
@@ -130,7 +126,7 @@ const GameContainer: React.FC = () => {
   const photos = currentListing.fields.Photos || [];
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleGuessSubmit(e as any);
     }
   };
@@ -154,12 +150,8 @@ const GameContainer: React.FC = () => {
         <p className="address">{currentListing.fields.Address}</p>
 
         <div className="property-info">
-          <span className="info-item">
-            {currentListing.fields["Bedroom Count"]} Bedrooms
-          </span>
-          <span className="info-item">
-            {currentListing.fields["Bathroom Count"]} Bathrooms
-          </span>
+          <span className="info-item">{currentListing.fields['Bedroom Count']} Bedrooms</span>
+          <span className="info-item">{currentListing.fields['Bathroom Count']} Bathrooms</span>
         </div>
 
         {currentListing.fields.Details && (
@@ -171,7 +163,7 @@ const GameContainer: React.FC = () => {
           <h3>Location</h3>
           <iframe
             src={`https://maps.google.com/maps?q=${encodeURIComponent(
-              currentListing.fields.Address
+              currentListing.fields.Address,
             )}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
             width="100%"
             height="200"
@@ -207,40 +199,34 @@ const GameContainer: React.FC = () => {
           <div className="result-content">
             <h3>
               {guessResult.isCorrect
-                ? "🎯 Perfect!"
+                ? '🎯 Perfect!'
                 : guessResult.difference < guessResult.actualRent * 0.1
-                ? "🔥 Close!"
-                : "Not quite!"}
+                  ? '🔥 Close!'
+                  : 'Not quite!'}
             </h3>
 
             <div className="result-details">
               <p>
-                Your guess:{" "}
-                <strong>${guessResult.userGuess.toLocaleString()}</strong>
+                Your guess: <strong>${guessResult.userGuess.toLocaleString()}</strong>
               </p>
               <p>
-                Actual rent:{" "}
-                <strong>${guessResult.actualRent.toLocaleString()}</strong>
+                Actual rent: <strong>${guessResult.actualRent.toLocaleString()}</strong>
               </p>
 
               {!guessResult.isCorrect && (
                 <p className="difference">
-                  You were{" "}
+                  You were{' '}
                   <strong>
-                    {guessResult.userGuess > guessResult.actualRent
-                      ? "too high"
-                      : "too low"}
-                  </strong>{" "}
-                  by <strong>${guessResult.difference.toLocaleString()}</strong>{" "}
-                  ({guessResult.percentageDiff}% off)
+                    {guessResult.userGuess > guessResult.actualRent ? 'too high' : 'too low'}
+                  </strong>{' '}
+                  by <strong>${guessResult.difference.toLocaleString()}</strong> (
+                  {guessResult.percentageDiff}% off)
                 </p>
               )}
             </div>
 
             <button onClick={handleNextListing} className="next-btn">
-              {currentIndex < listings.length - 1
-                ? "Next Listing"
-                : "Finish Game"}
+              {currentIndex < listings.length - 1 ? 'Next Listing' : 'Finish Game'}
             </button>
           </div>
         </div>

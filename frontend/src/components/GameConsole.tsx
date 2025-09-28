@@ -1,12 +1,12 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Listing, ListingsResponse } from "../types";
-import StoryIntro from "./StoryIntro";
-import GameWindow from "./GameWindow";
-import ResultModal from "./ResultModal";
-import Leaderboard from "./Leaderboard";
-import UsernameSubmit from "./UsernameSubmit";
-import "./GameConsole.css";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Listing, ListingsResponse } from '../types';
+import StoryIntro from './StoryIntro';
+import GameWindow from './GameWindow';
+import ResultModal from './ResultModal';
+import Leaderboard from './Leaderboard';
+import UsernameSubmit from './UsernameSubmit';
+import './GameConsole.css';
 
 interface GuessResult {
   userGuess: number;
@@ -22,7 +22,7 @@ enum GameState {
   PLAYING,
   RESULT,
   COMPLETE,
-  ERROR
+  ERROR,
 }
 
 const GameConsole: React.FC = () => {
@@ -34,15 +34,15 @@ const GameConsole: React.FC = () => {
   const [score, setScore] = useState<number[]>([]);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
   const [submittedUsername, setSubmittedUsername] = useState<string | null>(null);
-  const [usernameInput, setUsernameInput] = useState("");
+  const [usernameInput, setUsernameInput] = useState('');
   const [usernameSubmitting, setUsernameSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [postCompleteStep, setPostCompleteStep] = useState<'username' | 'leaderboard'>('username');
-  const isLocal = typeof window !== 'undefined' && (
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1' ||
-    window.location.hostname === '0.0.0.0'
-  );
+  const isLocal =
+    typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.hostname === '0.0.0.0');
   const skipToComplete = () => setGameState(GameState.COMPLETE);
 
   useEffect(() => {
@@ -50,15 +50,11 @@ const GameConsole: React.FC = () => {
       try {
         setGameState(GameState.LOADING);
         const apiUrl = process.env.REACT_APP_API_URL;
-        const response = await axios.get<ListingsResponse>(
-          `${apiUrl}/listings`
-        );
+        const response = await axios.get<ListingsResponse>(`${apiUrl}/listings`);
         setListings(response.data.listings);
         setGameState(GameState.PLAYING);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load listings"
-        );
+        setError(err instanceof Error ? err.message : 'Failed to load listings');
         setGameState(GameState.ERROR);
       }
     };
@@ -74,7 +70,7 @@ const GameConsole: React.FC = () => {
 
   const handleGuessSubmit = (userGuess: number) => {
     const currentListing = listings[currentIndex];
-    const actualRent = currentListing.fields["Rent Price"];
+    const actualRent = currentListing.fields['Rent Price'];
     const difference = Math.abs(userGuess - actualRent);
     const percentageDiff = Math.round((difference / actualRent) * 100);
 
@@ -93,7 +89,7 @@ const GameConsole: React.FC = () => {
 
   const handleNextListing = () => {
     setGuessResult(null);
-    
+
     if (currentIndex < listings.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setGameState(GameState.PLAYING);
@@ -118,82 +114,88 @@ const GameConsole: React.FC = () => {
 
   const getOverallGrade = () => {
     const accuracy = getAverageAccuracy();
-    if (accuracy >= 90) return "S";
-    if (accuracy >= 80) return "A";
-    if (accuracy >= 70) return "B";
-    if (accuracy >= 60) return "C";
-    if (accuracy >= 50) return "D";
-    return "F";
+    if (accuracy >= 90) return 'S';
+    if (accuracy >= 80) return 'A';
+    if (accuracy >= 70) return 'B';
+    if (accuracy >= 60) return 'C';
+    if (accuracy >= 50) return 'D';
+    return 'F';
   };
 
   // Render based on game state
   switch (gameState) {
     case GameState.STORY:
-      return <>
-        <StoryIntro onStoryComplete={handleStoryComplete} />
-        {isLocal && (
-          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
-        )}
-      </>;
+      return (
+        <>
+          <StoryIntro onStoryComplete={handleStoryComplete} />
+          {isLocal && (
+            <button className="dev-skip-btn" onClick={skipToComplete}>
+              Skip to Leaderboard
+            </button>
+          )}
+        </>
+      );
 
     case GameState.LOADING:
       return (
         <>
-        <div className="game-console-loading">
-          <div className="loading-console">
-            <div className="loading-header">
-              <div className="loading-title">RENT DETECTIVE CONSOLE</div>
-              <div className="loading-status">INITIALIZING...</div>
-            </div>
-            <div className="loading-screen">
-              <div className="loading-content">
-                <div className="loading-spinner"></div>
-                <div className="loading-text">
-                  CONNECTING TO DATABASE...<br/>
-                  LOADING PROPERTY DATA...<br/>
-                  CALIBRATING SENSORS...
-                </div>
-                <div className="loading-progress">
-                  <div className="progress-bar"></div>
+          <div className="game-console-loading">
+            <div className="loading-console">
+              <div className="loading-header">
+                <div className="loading-title">RENT DETECTIVE CONSOLE</div>
+                <div className="loading-status">INITIALIZING...</div>
+              </div>
+              <div className="loading-screen">
+                <div className="loading-content">
+                  <div className="loading-spinner"></div>
+                  <div className="loading-text">
+                    CONNECTING TO DATABASE...
+                    <br />
+                    LOADING PROPERTY DATA...
+                    <br />
+                    CALIBRATING SENSORS...
+                  </div>
+                  <div className="loading-progress">
+                    <div className="progress-bar"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        {isLocal && (
-          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
-        )}
+          {isLocal && (
+            <button className="dev-skip-btn" onClick={skipToComplete}>
+              Skip to Leaderboard
+            </button>
+          )}
         </>
       );
 
     case GameState.ERROR:
       return (
         <>
-        <div className="game-console-error">
-          <div className="error-console">
-            <div className="error-header">
-              <div className="error-title">SYSTEM ERROR</div>
-              <div className="error-code">ERROR CODE: 404</div>
-            </div>
-            <div className="error-screen">
-              <div className="error-content">
-                <div className="error-icon">⚠️</div>
-                <div className="error-message">
-                  UNABLE TO CONNECT TO PROPERTY DATABASE
+          <div className="game-console-error">
+            <div className="error-console">
+              <div className="error-header">
+                <div className="error-title">SYSTEM ERROR</div>
+                <div className="error-code">ERROR CODE: 404</div>
+              </div>
+              <div className="error-screen">
+                <div className="error-content">
+                  <div className="error-icon">⚠️</div>
+                  <div className="error-message">UNABLE TO CONNECT TO PROPERTY DATABASE</div>
+                  <div className="error-details">{error}</div>
+                  <button className="retry-btn" onClick={resetGame}>
+                    RETRY CONNECTION
+                  </button>
                 </div>
-                <div className="error-details">
-                  {error}
-                </div>
-                <button className="retry-btn" onClick={resetGame}>
-                  RETRY CONNECTION
-                </button>
               </div>
             </div>
           </div>
-        </div>
-        {isLocal && (
-          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
-        )}
+          {isLocal && (
+            <button className="dev-skip-btn" onClick={skipToComplete}>
+              Skip to Leaderboard
+            </button>
+          )}
         </>
       );
 
@@ -218,52 +220,56 @@ const GameConsole: React.FC = () => {
 
       return (
         <>
-        <div className="game-console-background">
-          <GameWindow
-            photos={photos}
-            propertyName={currentListing.fields.Name}
-            address={currentListing.fields.Address}
-            bedrooms={currentListing.fields["Bedroom Count"]}
-            bathrooms={currentListing.fields["Bathroom Count"]}
-            details={currentListing.fields.Details || ""}
-            currentProperty={currentIndex + 1}
-            totalProperties={listings.length}
-            onGuessSubmit={handleGuessSubmit}
-          />
-        </div>
-        {isLocal && (
-          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
-        )}
+          <div className="game-console-background">
+            <GameWindow
+              photos={photos}
+              propertyName={currentListing.fields.Name}
+              address={currentListing.fields.Address}
+              bedrooms={currentListing.fields['Bedroom Count']}
+              bathrooms={currentListing.fields['Bathroom Count']}
+              details={currentListing.fields.Details || ''}
+              currentProperty={currentIndex + 1}
+              totalProperties={listings.length}
+              onGuessSubmit={handleGuessSubmit}
+            />
+          </div>
+          {isLocal && (
+            <button className="dev-skip-btn" onClick={skipToComplete}>
+              Skip to Leaderboard
+            </button>
+          )}
         </>
       );
 
     case GameState.RESULT:
       return (
         <>
-        <div className="game-console-background">
-          <GameWindow
-            photos={listings[currentIndex].fields.Photos || []}
-            propertyName={listings[currentIndex].fields.Name}
-            address={listings[currentIndex].fields.Address}
-            bedrooms={listings[currentIndex].fields["Bedroom Count"]}
-            bathrooms={listings[currentIndex].fields["Bathroom Count"]}
-            details={listings[currentIndex].fields.Details || ""}
-            currentProperty={currentIndex + 1}
-            totalProperties={listings.length}
-            onGuessSubmit={() => {}}
-            disabled={true}
-          />
-          {guessResult && (
-            <ResultModal
-              result={guessResult}
-              onNext={handleNextListing}
-              isLastProperty={currentIndex >= listings.length - 1}
+          <div className="game-console-background">
+            <GameWindow
+              photos={listings[currentIndex].fields.Photos || []}
+              propertyName={listings[currentIndex].fields.Name}
+              address={listings[currentIndex].fields.Address}
+              bedrooms={listings[currentIndex].fields['Bedroom Count']}
+              bathrooms={listings[currentIndex].fields['Bathroom Count']}
+              details={listings[currentIndex].fields.Details || ''}
+              currentProperty={currentIndex + 1}
+              totalProperties={listings.length}
+              onGuessSubmit={() => {}}
+              disabled={true}
             />
+            {guessResult && (
+              <ResultModal
+                result={guessResult}
+                onNext={handleNextListing}
+                isLastProperty={currentIndex >= listings.length - 1}
+              />
+            )}
+          </div>
+          {isLocal && (
+            <button className="dev-skip-btn" onClick={skipToComplete}>
+              Skip to Leaderboard
+            </button>
           )}
-        </div>
-        {isLocal && (
-          <button className="dev-skip-btn" onClick={skipToComplete}>Skip to Leaderboard</button>
-        )}
         </>
       );
 
@@ -279,26 +285,25 @@ const GameConsole: React.FC = () => {
               <div className="complete-content">
                 <div className="complete-icon">🎯</div>
                 <h2>RENT DETECTIVE CERTIFICATION</h2>
-                
-                  {postCompleteStep === 'username' ? (
+
+                {postCompleteStep === 'username' ? (
                   <>
                     <div className="final-stats">
-                    <div className="stat-row">
-                      <span className="stat-label">PROPERTIES ANALYZED:</span>
-                      <span className="stat-value">{listings.length}</span>
+                      <div className="stat-row">
+                        <span className="stat-label">PROPERTIES ANALYZED:</span>
+                        <span className="stat-value">{listings.length}</span>
+                      </div>
+                      <div className="stat-row">
+                        <span className="stat-label">AVERAGE ACCURACY:</span>
+                        <span className="stat-value">{getAverageAccuracy().toFixed(1)}%</span>
+                      </div>
+                      <div className="stat-row">
+                        <span className="stat-label">FINAL GRADE:</span>
+                        <span className={`stat-value grade-${getOverallGrade().toLowerCase()}`}>
+                          {getOverallGrade()}
+                        </span>
+                      </div>
                     </div>
-                    <div className="stat-row">
-                      <span className="stat-label">AVERAGE ACCURACY:</span>
-                      <span className="stat-value">{getAverageAccuracy().toFixed(1)}%</span>
-                    </div>
-                    <div className="stat-row">
-                      <span className="stat-label">FINAL GRADE:</span>
-                      <span className={`stat-value grade-${getOverallGrade().toLowerCase()}`}>
-                        {getOverallGrade()}
-                      </span>
-                    </div>
-                  </div>
-
 
                     <UsernameSubmit
                       avgError={100 - getAverageAccuracy()}
@@ -312,7 +317,10 @@ const GameConsole: React.FC = () => {
                 ) : (
                   <>
                     <div style={{ width: '100%', maxWidth: 500, marginTop: 20, marginBottom: 20 }}>
-                      <Leaderboard highlightUsername={submittedUsername ?? undefined} refreshSignal={leaderboardRefresh} />
+                      <Leaderboard
+                        highlightUsername={submittedUsername ?? undefined}
+                        refreshSignal={leaderboardRefresh}
+                      />
                     </div>
                   </>
                 )}

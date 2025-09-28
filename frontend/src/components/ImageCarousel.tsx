@@ -62,7 +62,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
     }
   };
 
-
   const handleImageError = (index: number) => {
     setImageLoadError((prev) => new Set(prev).add(index));
   };
@@ -77,10 +76,10 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!touchStart) return;
-    
+
     const currentTouch = e.targetTouches[0].clientX;
     setTouchEnd(currentTouch);
-    
+
     // Determine if this is a significant drag
     const distance = Math.abs(touchStart - currentTouch);
     if (distance > 10) {
@@ -96,7 +95,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
       setIsDragging(false);
       return;
     }
-    
+
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
@@ -106,7 +105,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
     } else if (isRightSwipe && validPhotos.length > 1) {
       handlePrevious();
     }
-    
+
     // Reset state
     setIsDragging(false);
     setTouchStart(null);
@@ -118,11 +117,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
       <div className={`image-carousel no-photos ${className}`}>
         <div className="carousel-container">
           <div className="image-container">
-            <img
-              src={getPlaceholderUrl()}
-              alt="No photos available"
-              className="carousel-image"
-            />
+            <img src={getPlaceholderUrl()} alt="No photos available" className="carousel-image" />
             <div className="no-photos-overlay">
               <span>No Photos Available</span>
             </div>
@@ -137,7 +132,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
 
   return (
     <div className={`image-carousel ${className}`}>
-      <div 
+      <div
         className="carousel-container"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -193,13 +188,13 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
             {currentIndex + 1} / {validPhotos.length}
           </div>
         )}
-        
+
         {/* Mobile Swipe Indicator */}
         {validPhotos.length > 1 && (
           <div className="swipe-indicator">
             {validPhotos.map((_, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`swipe-dot ${index === currentIndex ? 'active' : ''}`}
                 onClick={() => setCurrentIndex(index)}
               />
@@ -207,7 +202,6 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
           </div>
         )}
       </div>
-
     </div>
   );
 };

@@ -18,7 +18,7 @@ export const useDeviceDetection = (): DeviceInfo => {
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
     orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
-    touchSupported: 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    touchSupported: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
   });
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const useDeviceDetection = (): DeviceInfo => {
         screenWidth: width,
         screenHeight: height,
         orientation,
-        touchSupported
+        touchSupported,
       });
     };
 

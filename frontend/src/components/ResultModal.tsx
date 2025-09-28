@@ -18,6 +18,7 @@ interface ResultModalProps {
 const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastProperty }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showMainResult, setShowMainResult] = useState(false);
+  const [bottomInset, setBottomInset] = useState(0);
 
   const handleKeyPress = useCallback(
     (e: KeyboardEvent) => {
@@ -36,6 +37,22 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
     ];
 
     return () => timers.forEach(clearTimeout);
+  }, []);
+
+  useEffect(() => {
+    const vv = (window as any).visualViewport as VisualViewport | undefined;
+    if (!vv) return;
+    const handleResize = () => {
+      const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setBottomInset(inset);
+    };
+    vv.addEventListener('resize', handleResize);
+    vv.addEventListener('scroll', handleResize);
+    handleResize();
+    return () => {
+      vv.removeEventListener('resize', handleResize);
+      vv.removeEventListener('scroll', handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -71,7 +88,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ result, onNext, isLastPropert
   };
 
   return (
-    <div className="result-modal-overlay">
+    <div className="result-modal-overlay" style={{ paddingBottom: bottomInset ? bottomInset + 16 : 0 }}>
       <div className="result-console">
         <div className="result-screen">
           <div className="screen-content">

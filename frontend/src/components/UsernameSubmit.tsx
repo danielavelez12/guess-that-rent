@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 interface UsernameSubmitProps {
@@ -10,6 +10,27 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
   const [usernameInput, setUsernameInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bottomInset, setBottomInset] = useState(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const vv = (window as any).visualViewport as VisualViewport | undefined;
+    if (!vv) return;
+    const handleResize = () => {
+      const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setBottomInset(inset);
+      if (inputRef.current && document.activeElement === inputRef.current) {
+        inputRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    };
+    vv.addEventListener('resize', handleResize);
+    vv.addEventListener('scroll', handleResize);
+    handleResize();
+    return () => {
+      vv.removeEventListener('resize', handleResize);
+      vv.removeEventListener('scroll', handleResize);
+    };
+  }, []);
 
   const handleSubmit = async () => {
     if (!usernameInput.trim()) return;
@@ -32,7 +53,7 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
   };
 
   return (
-    <div className="username-cta">
+    <div className="username-cta" style={{ paddingBottom: bottomInset ? bottomInset + 16 : 0 }}>
       <div className="username-title">Enter your username to view the leaderboard.</div>
       <div className="username-form">
         <input
@@ -42,7 +63,13 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
           value={usernameInput}
           onChange={(e) => setUsernameInput(e.target.value)}
           disabled={submitting}
+          onFocus={() => {
+            setTimeout(() => {
+              if (inputRef.current) inputRef.current.scrollIntoView({ block: 'center' });
+            }, 50);
+          }}
           maxLength={24}
+          ref={inputRef}
         />
         <button
           className="username-submit"

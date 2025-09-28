@@ -23,7 +23,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
         const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/today`);
-        const sorted = [...data.scores].sort((a, b) => a.score_value - b.score_value);
+        const sorted = [...data.scores].sort((a, b) => b.score_value - a.score_value);
 
         // Separate AI models from human users
         const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];

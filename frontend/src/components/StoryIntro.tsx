@@ -23,7 +23,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     "",
     "Your mission: analyze properties and predict the exact market rent.",
     "",
-    "Let's hope you're better than ChatGPT and Claude",
+    "Let's hope you're better than ChatGPT and Claude.",
     "",
     "Time to prove my 60-hour coding sprints weren't for nothing.",
     "",

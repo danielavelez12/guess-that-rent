@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Listing, ListingsResponse } from '../types';
+import { Listing, ListingsResponse, ScoreItem, ScoreTodayResponse } from '../types';
 import StoryIntro from './StoryIntro';
 import GameWindow from './GameWindow';
 import ResultModal from './ResultModal';
@@ -38,6 +38,7 @@ const GameConsole: React.FC = () => {
   const [usernameSubmitting, setUsernameSubmitting] = useState(false);
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [postCompleteStep, setPostCompleteStep] = useState<'username' | 'leaderboard'>('username');
+  const [leaderboardScores, setLeaderboardScores] = useState<ScoreItem[]>([]);
   const isLocal =
     typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' ||
@@ -98,6 +99,13 @@ const GameConsole: React.FC = () => {
     }
   };
 
+  // Fetch leaderboard scores when game completes
+  useEffect(() => {
+    if (gameState === GameState.COMPLETE) {
+      fetchLeaderboardScores();
+    }
+  }, [gameState]);
+
   const resetGame = () => {
     setCurrentIndex(0);
     setGameState(GameState.STORY);
@@ -122,6 +130,31 @@ const GameConsole: React.FC = () => {
     return 'F';
   };
 
+  const fetchLeaderboardScores = async () => {
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL;
+      const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/today`);
+      setLeaderboardScores(data.scores);
+    } catch (err) {
+      console.error('Failed to fetch leaderboard scores:', err);
+    }
+  };
+
+  const checkIfUserBeatAI = () => {
+    const userAccuracy = getAverageAccuracy();
+    const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
+
+    const aiScores = leaderboardScores.filter(score =>
+      aiModels.some(model => score.username.includes(model))
+    );
+
+    // If no AI models found, default to "YOU BEAT THE BOT"
+    if (aiScores.length === 0) return true;
+
+    // Check if user's accuracy is higher than all AI models
+    return aiScores.every(aiScore => userAccuracy > aiScore.score_value);
+  };
+
   // Render based on game state
   switch (gameState) {
     case GameState.STORY:
@@ -142,7 +175,7 @@ const GameConsole: React.FC = () => {
           <div className="game-console-loading">
             <div className="loading-console">
               <div className="loading-header">
-                <div className="loading-title">RENT DETECTIVE CONSOLE</div>
+                <div className="loading-title">BEAT THE BOT</div>
                 <div className="loading-status">INITIALIZING...</div>
               </div>
               <div className="loading-screen">
@@ -283,8 +316,8 @@ const GameConsole: React.FC = () => {
             </div>
             <div className="complete-screen">
               <div className="complete-content">
-                <div className="complete-icon">🎯</div>
-                <h2>RENT DETECTIVE CERTIFICATION</h2>
+                <div className="complete-icon">{checkIfUserBeatAI() ? "🔥" : "😢"}</div>
+                <h2>{checkIfUserBeatAI() ? "YOU BEAT THE BOT" : "YOU DID NOT BEAT THE BOT"}</h2>
 
                 {postCompleteStep === 'username' ? (
                   <>

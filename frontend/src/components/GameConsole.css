@@ -39,9 +39,10 @@
   }
 }
 
-/* Only hide overflow on larger screens */
-@media (min-width: 769px) {
+@media (max-width: 768px) {
   .game-console-background {
+    position: fixed;
+    height: 100dvh;
     overflow: hidden;
   }
 }

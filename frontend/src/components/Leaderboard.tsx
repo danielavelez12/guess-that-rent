@@ -5,9 +5,10 @@ import './Leaderboard.css';
 
 interface LeaderboardProps {
   highlightUsername?: string;
+  refreshSignal?: number;
 }
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername }) => {
+const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSignal }) => {
   const [scores, setScores] = useState<ScoreItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername }) => {
       }
     };
     fetchScores();
-  }, []);
+  }, [refreshSignal]);
 
   if (loading) {
     return (

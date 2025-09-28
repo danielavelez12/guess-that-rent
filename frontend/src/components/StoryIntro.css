@@ -118,8 +118,10 @@
 
 .control-section {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  text-align: center;
 }
 
 .control-label {
@@ -131,6 +133,8 @@
 .control-buttons {
   display: flex;
   gap: 15px;
+  flex-direction: column;
+  width: 100%;
 }
 
 .control-btn {
@@ -145,6 +149,8 @@
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
+  width: 100%;
+  white-space: normal;
 }
 
 .control-btn:hover {
@@ -375,7 +381,8 @@
 .mobile-control-button {
   position: fixed;
   bottom: 30px;
-  right: 30px;
+  left: 50%;
+  right: auto;
   width: 64px;
   height: 64px;
   background: linear-gradient(45deg, #0066cc, #0088ff);
@@ -384,7 +391,7 @@
   color: #fff;
   font-size: 24px;
   cursor: pointer;
-  display: none; /* Hidden by default, shown on mobile */
+  display: flex; /* Visible across breakpoints */
   align-items: center;
   justify-content: center;
   box-shadow: 
@@ -395,18 +402,19 @@
   font-family: 'Courier New', monospace;
   font-weight: bold;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transform: translateX(-50%);
 }
 
 .mobile-control-button:hover {
   background: linear-gradient(45deg, #0088ff, #00aaff);
-  transform: translateY(-3px) scale(1.05);
+  transform: translate(-50%, -3px) scale(1.05);
   box-shadow: 
     0 8px 30px rgba(0, 136, 255, 0.6),
     0 0 40px rgba(0, 170, 255, 0.5);
 }
 
 .mobile-control-button:active {
-  transform: translateY(-1px) scale(0.95);
+  transform: translate(-50%, -1px) scale(0.95);
   box-shadow: 
     0 4px 15px rgba(0, 136, 255, 0.8),
     0 0 25px rgba(0, 170, 255, 0.7);

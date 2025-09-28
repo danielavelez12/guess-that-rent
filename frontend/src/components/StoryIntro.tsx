@@ -26,12 +26,14 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     "Can you beat Claude and OpenAI at their own game?"
   ];
 
-  const lineSpeed = 800; // milliseconds per line
+  const charSpeed = 30;
+  const lineDelayMs = 1000;
 
   const skipStory = useCallback(() => {
     const fullText = storyLines.join('\n');
     setDisplayedText(fullText);
     setCurrentLineIndex(storyLines.length);
+    setCurrentCharIndex(0);
   }, [storyLines]);
 
   const handleKeyPress = useCallback((e: KeyboardEvent) => {
@@ -43,23 +45,33 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   }, [currentLineIndex, storyLines.length, onStoryComplete, skipStory]);
 
   useEffect(() => {
-    const showNextLine = () => {
-      if (currentLineIndex < storyLines.length) {
-        const currentLine = storyLines[currentLineIndex];
-        // Show entire line at once
-        setDisplayedText(prev => prev + currentLine + '\n');
+    if (currentLineIndex >= storyLines.length) return;
+    const line = storyLines[currentLineIndex];
+    const isBlank = line.length === 0;
+    const isLineDone = currentCharIndex >= line.length;
+    const delay = isBlank || isLineDone ? lineDelayMs : charSpeed;
+
+    const timer = setTimeout(() => {
+      if (currentLineIndex >= storyLines.length) return;
+      const activeLine = storyLines[currentLineIndex];
+      if (activeLine.length === 0) {
+        setDisplayedText(prev => prev + '\n');
         setCurrentLineIndex(prev => prev + 1);
+        setCurrentCharIndex(0);
+        return;
       }
-    };
+      if (currentCharIndex < activeLine.length) {
+        setDisplayedText(prev => prev + activeLine[currentCharIndex]);
+        setCurrentCharIndex(prev => prev + 1);
+        return;
+      }
+      setDisplayedText(prev => prev + '\n');
+      setCurrentLineIndex(prev => prev + 1);
+      setCurrentCharIndex(0);
+    }, delay);
 
-    // If current line is blank, show it immediately without delay
-    const currentLine = storyLines[currentLineIndex];
-    const isBlankLine = currentLine === "";
-    const delay = isBlankLine ? 0 : lineSpeed;
-
-    const timer = setTimeout(showNextLine, delay);
     return () => clearTimeout(timer);
-  }, [currentLineIndex, storyLines, lineSpeed]);
+  }, [currentLineIndex, currentCharIndex, storyLines, charSpeed, lineDelayMs]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);
@@ -80,12 +92,13 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
               <div className={`terminal-text ${isMobile ? 'mobile-segment' : ''}`}>
                 {(() => {
                   if (isMobile) {
-                    const end = Math.min(currentLineIndex, storyLines.length);
+                    const allLines = displayedText.split('\n');
                     let start = 0;
-                    for (let i = end - 1; i >= 0; i--) {
-                      if (storyLines[i] === '') { start = i + 1; break; }
+                    for (let i = allLines.length - 2; i >= 0; i--) {
+                      if (allLines[i] === '') { start = i + 1; break; }
                     }
-                    const lines = storyLines.slice(start, end);
+                    const endIndex = allLines[allLines.length - 1] === '' ? allLines.length - 1 : allLines.length;
+                    const lines = allLines.slice(start, endIndex);
                     return lines.map((line, index) => (
                       <div key={index} className="terminal-line">
                         {line}
@@ -114,11 +127,11 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
             <div className="control-label">CONTROLS</div>
             <div className="control-buttons">
               <button className="control-btn" onClick={skipStory}>
-                SKIP [SPACE]
+                ⏭  SKIP [SPACE]
               </button>
               {currentLineIndex >= storyLines.length && (
                 <button className="control-btn primary" onClick={onStoryComplete}>
-                  START MISSION [ENTER]
+                  ▶  START MISSION [ENTER]
                 </button>
               )}
             </div>

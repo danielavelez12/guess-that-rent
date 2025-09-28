@@ -204,6 +204,9 @@
   font-weight: bold;
   text-shadow: 0 0 10px #ffff00;
   animation: pulse 2s infinite;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
 }
 
 .result-details {

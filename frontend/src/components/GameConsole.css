@@ -481,6 +481,84 @@
   box-shadow: 0 4px 25px rgba(68, 255, 68, 0.5);
 }
 
+/* Username submission styles */
+.username-cta {
+  width: 100%;
+  background: rgba(0, 255, 170, 0.06);
+  border: 2px solid rgba(0, 255, 170, 0.25);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 10px 0 0 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.username-title {
+  color: #00ffaa;
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-shadow: 0 0 8px rgba(0, 255, 170, 0.4);
+}
+
+.username-subtitle {
+  color: #bfffe9;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.username-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.username-input {
+  flex: 1;
+  background: #0b1a16;
+  border: 2px solid #11665a;
+  color: #eafff7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: 'Courier New', monospace;
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: #00ffaa;
+  box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+}
+
+.username-submit {
+  background: linear-gradient(45deg, #00aa77, #00ffaa);
+  color: #003322;
+  border: 2px solid #00ffaa;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.username-submit:hover:not([disabled]) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.username-submit[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.username-error {
+  color: #ff8888;
+  margin-top: 8px;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }

@@ -27,6 +27,7 @@ python main.py
 - `AIRTABLE_API_KEY`: Your Airtable API key
 - `PORT`: Server port (default: 8000)
 - `DATABASE_URL`: SQLAlchemy URL to your Postgres database
+- `DB_SCHEMA`: Optional Postgres schema name (default: `public`). If your tables live under a different schema (e.g., `main`), set this.
 
 ## API Endpoints
 

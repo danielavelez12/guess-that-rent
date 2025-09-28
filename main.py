@@ -34,12 +34,14 @@ AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
 AIRTABLE_URL = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/{AIRTABLE_TABLE_NAME}"
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+DB_SCHEMA = os.getenv("DB_SCHEMA", "public")
 engine = create_engine(DATABASE_URL) if DATABASE_URL else None
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
+    __table_args__ = {"schema": DB_SCHEMA}
     id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     ip_address: Mapped[str] = mapped_column(String, nullable=False)
@@ -50,8 +52,13 @@ class CreateUserRequest(BaseModel):
 
 class Score(Base):
     __tablename__ = "score"
+    __table_args__ = {"schema": DB_SCHEMA}
     id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        ForeignKey(f"{DB_SCHEMA}.users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     score_value: Mapped[int] = mapped_column(Integer, nullable=False)
 
@@ -140,6 +147,18 @@ async def create_user(payload: CreateUserRequest, request: Request, db: Session 
     except IntegrityError:
         db.rollback()
         raise HTTPException(status_code=409, detail="Username already exists")
+    return {
+        "id": str(user.id),
+        "username": user.username,
+        "ip_address": user.ip_address,
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+    }
+
+@app.get("/users/by-username/{username}")
+async def get_user_by_username(username: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == username).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     return {
         "id": str(user.id),
         "username": user.username,

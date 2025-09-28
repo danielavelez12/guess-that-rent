@@ -15,19 +15,21 @@ const GuessSlider: React.FC<GuessSliderProps> = ({
   disabled = false
 }) => {
   const [guess, setGuess] = useState('');
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [animateOpen, setAnimateOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setIsAnimating(true);
-      // Reset guess when opening
+      setMounted(true);
       setGuess('');
-    } else if (isAnimating) {
-      // Keep animating state during slide-down transition
-      const timer = setTimeout(() => setIsAnimating(false), 300);
-      return () => clearTimeout(timer);
+      const id = requestAnimationFrame(() => setAnimateOpen(true));
+      return () => cancelAnimationFrame(id);
+    } else {
+      setAnimateOpen(false);
+      const t = setTimeout(() => setMounted(false), 300);
+      return () => clearTimeout(t);
     }
-  }, [isOpen, isAnimating]);
+  }, [isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,27 +49,24 @@ const GuessSlider: React.FC<GuessSliderProps> = ({
   };
 
   const formatCurrency = (value: string) => {
-    // Remove non-digits
     const numericValue = value.replace(/\D/g, '');
-    // Add commas for thousands
     return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9]/g, ''); // Only allow numbers
+    const value = e.target.value.replace(/[^0-9]/g, '');
     setGuess(value);
   };
 
-  if (!isOpen && !isAnimating) return null;
-  
-  // Always render when animating or open to allow CSS transitions
+  if (!mounted) return null;
 
   return (
     <div 
       className="guess-slider-backdrop"
       onClick={handleBackdropClick}
     >
-      <div className={`guess-slider ${isOpen ? 'slide-up' : 'slide-down'}`}>
+      {isOpen && (
+      <div className={`guess-slider ${animateOpen ? 'slide-up' : 'slide-down'}`}>
         <div className="slider-handle" />
         
         <div className="slider-header">
@@ -111,8 +110,9 @@ const GuessSlider: React.FC<GuessSliderProps> = ({
               </div>
             </div>
           </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

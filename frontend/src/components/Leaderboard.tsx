@@ -23,14 +23,13 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
         const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/today`);
-        const sorted = [...data.scores].sort((a, b) => b.score_value - a.score_value);
 
         // Separate AI models from human users
         const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
-        const aiScores = sorted.filter(score =>
+        const aiScores = data.scores.filter(score =>
           aiModels.some(model => score.username.includes(model))
         );
-        const humanScores = sorted.filter(score =>
+        const humanScores = data.scores.filter(score =>
           !aiModels.some(model => score.username.includes(model))
         );
 
@@ -38,8 +37,11 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
         const topHumans = humanScores.slice(0, 3);
         const displayScores = [...topHumans, ...aiScores];
 
+        const sorted = [...displayScores].sort((a, b) => b.score_value - a.score_value);
+        
+
         // Add rank information and type indicator
-        const rankedScores = displayScores.map((score, index) => {
+        const rankedScores = sorted.map((score, index) => {
           const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
           const isAI = aiModels.some(model => score.username.includes(model));
 

@@ -10,7 +10,6 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
   const [usernameInput, setUsernameInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [bottomInset, setBottomInset] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -18,7 +17,6 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
     if (!vv) return;
     const handleResize = () => {
       const inset = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      setBottomInset(inset);
       if (inputRef.current && document.activeElement === inputRef.current) {
         inputRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' });
       }
@@ -53,7 +51,7 @@ const UsernameSubmit: React.FC<UsernameSubmitProps> = ({ avgError, onSubmitted }
   };
 
   return (
-    <div className="username-cta" style={{ paddingBottom: bottomInset ? bottomInset + 16 : 0 }}>
+    <div className="username-cta" style={{ paddingBottom: 16 }}>
       <div className="username-title">Enter your username to view the leaderboard.</div>
       <div className="username-form">
         <input

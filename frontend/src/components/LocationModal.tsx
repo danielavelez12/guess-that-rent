@@ -17,7 +17,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, address 
   };
 
   return (
-    <div className="location-modal-backdrop" onClick={handleBackdropClick}>
+    <div className="location-modal-backdrop ${isOpen ? '' : 'hidden'}" onClick={handleBackdropClick}>
       <div className="location-modal">
         <div className="modal-header">
           <h3 className="modal-title">LOCATION DATA</h3>
@@ -40,7 +40,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, address 
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
-              loading="lazy"
+              loading="eager"
               referrerPolicy="no-referrer-when-downgrade"
               title={`Map of ${address}`}
               className="map-iframe"

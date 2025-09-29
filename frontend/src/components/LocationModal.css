@@ -12,6 +12,13 @@
   z-index: 1000;
   backdrop-filter: blur(2px);
   animation: fadeIn 0.3s ease;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.location-modal-backdrop.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .location-modal {
@@ -30,18 +37,10 @@
     0 0 0 1px rgba(0, 255, 136, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: slideUp 0.3s ease;
-}
-
-.modal-header {
-  background: linear-gradient(90deg, #00ff88 0%, #00d4aa 100%);
-  color: #000;
-  padding: 12px 16px;
+  flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  position: relative;
-  flex-shrink: 0;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .modal-title {
@@ -73,17 +72,11 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.modal-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .address-info {
   padding: 16px 20px;
   border-bottom: 1px solid rgba(0, 255, 136, 0.2);
   background: rgba(0, 0, 0, 0.2);
+  min-height: 0;
 }
 
 .address-text {
@@ -98,6 +91,7 @@
   flex: 1;
   position: relative;
   overflow: hidden;
+  min-height: 0;
 }
 
 .map-iframe {

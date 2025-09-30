@@ -22,35 +22,19 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
     const fetchScores = async () => {
       try {
         const apiUrl = process.env.REACT_APP_API_URL;
-        const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/today`);
+        const { data } = await axios.get<ScoreTodayResponse>(`${apiUrl}/scores/week`);
 
-        // Separate AI models from human users
-        const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
-        const aiScores = data.scores.filter(score =>
-          aiModels.some(model => score.username.includes(model))
-        );
-        const humanScores = data.scores.filter(score =>
-          !aiModels.some(model => score.username.includes(model))
-        );
-
-        // Take top 3 human scores and all AI scores
-        const topHumans = humanScores.slice(0, 3);
-        const displayScores = [...topHumans, ...aiScores];
-
-        const sorted = [...displayScores].sort((a, b) => b.score_value - a.score_value);
-        
+        // Sort scores by score_value descending
+        const sorted = [...data.scores].sort((a, b) => b.score_value - a.score_value);
 
         // Add rank information and type indicator
         const rankedScores = sorted.map((score, index) => {
           const aiModels = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5'];
           const isAI = aiModels.some(model => score.username.includes(model));
 
-          // Find the actual rank in the overall sorted list
-          const actualRank = sorted.findIndex(s => s.id === score.id) + 1;
-
           return {
             ...score,
-            displayRank: actualRank,
+            displayRank: index + 1,
             isAI
           };
         });
@@ -68,7 +52,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
   if (loading) {
     return (
       <div className="leaderboard">
-        <div className="leaderboard-header">TODAY'S LEADERBOARD</div>
+        <div className="leaderboard-header">THIS WEEK'S LEADERBOARD</div>
         <div className="leaderboard-body">
           <div className="leaderboard-loading">Loading...</div>
         </div>
@@ -79,7 +63,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ highlightUsername, refreshSig
   if (error) {
     return (
       <div className="leaderboard">
-        <div className="leaderboard-header">TODAY'S LEADERBOARD</div>
+        <div className="leaderboard-header">THIS WEEK'S LEADERBOARD</div>
         <div className="leaderboard-body">
           <div className="leaderboard-error">{error}</div>
         </div>

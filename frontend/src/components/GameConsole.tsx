@@ -4,8 +4,7 @@ import { Listing, ListingsResponse, ScoreItem, ScoreTodayResponse } from '../typ
 import StoryIntro from './StoryIntro';
 import GameWindow from './GameWindow';
 import ResultModal from './ResultModal';
-import Leaderboard from './Leaderboard';
-import UsernameSubmit from './UsernameSubmit';
+import LeaderboardWithOverlay from './LeaderboardWithOverlay';
 import './GameConsole.css';
 
 interface GuessResult {
@@ -34,10 +33,6 @@ const GameConsole: React.FC = () => {
   const [score, setScore] = useState<number[]>([]);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
   const [submittedUsername, setSubmittedUsername] = useState<string | null>(null);
-  const [usernameInput, setUsernameInput] = useState('');
-  const [usernameSubmitting, setUsernameSubmitting] = useState(false);
-  const [usernameError, setUsernameError] = useState<string | null>(null);
-  const [postCompleteStep, setPostCompleteStep] = useState<'username' | 'leaderboard'>('username');
   const [leaderboardScores, setLeaderboardScores] = useState<ScoreItem[]>([]);
   const isLocal =
     typeof window !== 'undefined' &&
@@ -120,15 +115,6 @@ const GameConsole: React.FC = () => {
     return Math.max(0, 100 - avgError);
   };
 
-  const getOverallGrade = () => {
-    const accuracy = getAverageAccuracy();
-    if (accuracy >= 90) return 'S';
-    if (accuracy >= 80) return 'A';
-    if (accuracy >= 70) return 'B';
-    if (accuracy >= 60) return 'C';
-    if (accuracy >= 50) return 'D';
-    return 'F';
-  };
 
   const fetchLeaderboardScores = async () => {
     try {
@@ -316,56 +302,17 @@ const GameConsole: React.FC = () => {
             </div>
             <div className="complete-screen">
               <div className="complete-content">
-                <div className="complete-icon">{checkIfUserBeatAI() ? "🔥" : "😢"}</div>
-                <h2>{checkIfUserBeatAI() ? "YOU BEAT THE BOT" : "YOU DID NOT BEAT THE BOT"}</h2>
-
-                {postCompleteStep === 'username' ? (
-                  <>
-                    <div className="final-stats">
-                      <div className="stat-row">
-                        <span className="stat-label">PROPERTIES ANALYZED:</span>
-                        <span className="stat-value">{listings.length}</span>
-                      </div>
-                      <div className="stat-row">
-                        <span className="stat-label">AVERAGE ACCURACY:</span>
-                        <span className="stat-value">{getAverageAccuracy().toFixed(1)}%</span>
-                      </div>
-                      <div className="stat-row">
-                        <span className="stat-label">FINAL GRADE:</span>
-                        <span className={`stat-value grade-${getOverallGrade().toLowerCase()}`}>
-                          {getOverallGrade()}
-                        </span>
-                      </div>
-                    </div>
-
-                    <UsernameSubmit
-                      avgError={100 - getAverageAccuracy()}
-                      onSubmitted={(uname) => {
-                        setSubmittedUsername(uname);
-                        setLeaderboardRefresh((n) => n + 1);
-                        setPostCompleteStep('leaderboard');
-                      }}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <div style={{ width: '100%', maxWidth: 500, marginTop: 20, marginBottom: 20 }}>
-                      <Leaderboard
-                        highlightUsername={submittedUsername ?? undefined}
-                        refreshSignal={leaderboardRefresh}
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* <div className="completion-message">
-                  {getAverageAccuracy() >= 80
-                    ? "🔥 HOLY SHIT! My neural network training actually worked! You're crushing the NYC rental market like a boss. Those 60-hour coding sprints were worth it!"
-                    : getAverageAccuracy() >= 60
-                    ? "💪 Not bad! You're learning the market patterns. My AI is getting smarter. Soon we'll be outbidding every crypto bro in Brooklyn!"
-                    : "😤 Ugh, you're still getting schooled by trust fund kids. Back to the training data - I need to feed you more listings!"
-                  }
-                </div> */}
+                <div style={{ width: '100%', maxWidth: 500, margin: '20px auto' }}>
+                  <LeaderboardWithOverlay
+                    avgError={100 - getAverageAccuracy()}
+                    userScore={getAverageAccuracy()}
+                    beatAI={checkIfUserBeatAI()}
+                    onSubmitted={(uname) => {
+                      setSubmittedUsername(uname);
+                      setLeaderboardRefresh((n) => n + 1);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>

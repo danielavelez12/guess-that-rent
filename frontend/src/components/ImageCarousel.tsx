@@ -16,9 +16,10 @@ interface Photo {
 interface ImageCarouselProps {
   photos: Photo[];
   className?: string;
+  onIndexChange?: (index: number) => void;
 }
 
-const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' }) => {
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '', onIndexChange }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoadError, setImageLoadError] = useState<Set<number>>(new Set());
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -31,6 +32,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ photos, className = '' })
     setCurrentIndex(0);
     setImageLoadError(new Set());
   }, [photos]);
+
+  useEffect(() => {
+    if (onIndexChange) {
+      onIndexChange(currentIndex);
+    }
+  }, [currentIndex, onIndexChange]);
 
   const validPhotos = photos.filter((photo) => photo && photo.url);
   const hasPhotos = validPhotos.length > 0;

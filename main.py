@@ -196,6 +196,77 @@ async def get_today_scores(db: Session = Depends(get_db)):
         })
     return {"success": True, "count": len(items), "scores": items}
 
+@app.get("/scores/week")
+async def get_week_scores(db: Session = Depends(get_db)):
+    now_et = datetime.datetime.now(ZoneInfo("America/New_York"))
+    week_start_et = now_et - datetime.timedelta(days=7)
+    week_start_utc = week_start_et.astimezone(datetime.timezone.utc)
+    now_utc = now_et.astimezone(datetime.timezone.utc)
+
+    # Get all scores from the last week
+    rows = (
+        db.query(Score, User.username)
+        .join(User, Score.user_id == User.id)
+        .filter(Score.created_at >= week_start_utc, Score.created_at <= now_utc)
+        .order_by(Score.score_value.desc())
+        .all()
+    )
+
+    # Define AI models
+    ai_models = ['Sonnet 4', 'Gemini 2.5 Flash', 'GPT 5']
+
+    # Separate AI and human scores
+    ai_scores = []
+    human_scores = []
+
+    for s, username in rows:
+        score_item = {
+            "id": str(s.id),
+            "user_id": str(s.user_id),
+            "username": username,
+            "score_value": s.score_value,
+            "created_at": s.created_at.isoformat() if s.created_at else None,
+        }
+
+        if any(model in username for model in ai_models):
+            ai_scores.append(score_item)
+        else:
+            human_scores.append(score_item)
+
+    # For AI, get all their scores regardless of date, but limit to top 3
+    all_ai_rows = (
+        db.query(Score, User.username)
+        .join(User, Score.user_id == User.id)
+        .order_by(Score.score_value.desc())
+        .all()
+    )
+
+    # Get top AI scores (not just from last week), limited to 3
+    all_ai_scores = []
+    for s, username in all_ai_rows:
+        if any(model in username for model in ai_models):
+            all_ai_scores.append({
+                "id": str(s.id),
+                "user_id": str(s.user_id),
+                "username": username,
+                "score_value": s.score_value,
+                "created_at": s.created_at.isoformat() if s.created_at else None,
+            })
+
+    # Limit to top 3 AI scores
+    top_ai_scores = all_ai_scores[:3]
+
+    # Limit to top 3 human scores from last week
+    top_human_scores = human_scores[:3]
+
+    # Combine: top 3 AI scores + top 3 human scores from last week
+    combined_scores = top_ai_scores + top_human_scores
+
+    # Sort the combined list by score_value descending
+    combined_scores.sort(key=lambda x: x['score_value'], reverse=True)
+
+    return {"success": True, "count": len(combined_scores), "scores": combined_scores}
+
 @app.post("/scores")
 async def create_score(payload: CreateScoreRequest, db: Session = Depends(get_db)):
     user = db.get(User, payload.user_id)

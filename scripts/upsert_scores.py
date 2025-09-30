@@ -197,24 +197,23 @@ def main():
                 # Upsert user
                 user = upsert_user(db, model_name)
 
-                # Create score (convert back to error percentage for database storage)
-                error_score = round(100 - score)
-                create_score(db, user.id, error_score)
+                # Create score (store accuracy score directly)
+                accuracy_score = round(score)
+                create_score(db, user.id, accuracy_score)
 
             print("\n✓ Successfully processed all models!")
 
             # Display current scores
-            print("\nCurrent leaderboard (lower error % is better):")
+            print("\nCurrent leaderboard (higher accuracy % is better):")
             scores = (
                 db.query(Score, User.username)
                 .join(User, Score.user_id == User.id)
-                .order_by(Score.score_value.asc())
+                .order_by(Score.score_value.desc())
                 .all()
             )
 
             for i, (score, username) in enumerate(scores, 1):
-                accuracy_score = 100 - score.score_value
-                print(f"{i}. {username}: {score.score_value}% error (accuracy: {accuracy_score}%)")
+                print(f"{i}. {username}: {score.score_value}% accuracy")
 
         finally:
             db.close()

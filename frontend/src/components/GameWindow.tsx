@@ -45,6 +45,7 @@ const GameWindow: React.FC<GameWindowProps> = ({
 }) => {
   const device = useDeviceDetection();
   const [guess, setGuess] = useState('');
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   // Mobile modal states
   const [isPropertyModalOpen, setIsPropertyModalOpen] = useState(false);
@@ -134,8 +135,18 @@ const GameWindow: React.FC<GameWindowProps> = ({
   if (device.isMobile) {
     return (
       <div className="game-window mobile-layout">
+        {/* Photo index indicator above image on mobile */}
+        {photos.length > 1 && (
+          <div className="mobile-photo-index">
+            {currentPhotoIndex + 1} / {photos.length}
+          </div>
+        )}
         <div className="mobile-image-container">
-          <ImageCarousel photos={photos} className="mobile-carousel" />
+          <ImageCarousel
+            photos={photos}
+            className="mobile-carousel"
+            onIndexChange={setCurrentPhotoIndex}
+          />
 
           {/* Mobile Overlay HUD */}
           <div className="mobile-overlay-hud">

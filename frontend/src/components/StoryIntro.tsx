@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './StoryIntro.css';
 import useDeviceDetection from '../hooks/useDeviceDetection';
 
@@ -11,6 +11,7 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const { isMobile } = useDeviceDetection();
+  const terminalRef = useRef<HTMLDivElement>(null);
 
   const storyLines = [
     "Hey...",
@@ -106,6 +107,16 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [handleKeyPress]);
 
+  // Auto-scroll to bottom on mobile when new text appears
+  useEffect(() => {
+    if (isMobile && terminalRef.current) {
+      const container = terminalRef.current.closest('.screen-content') as HTMLElement;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+  }, [displayedText, isMobile]);
+
   return (
     <div className="story-intro">
       <div className="game-console">
@@ -117,32 +128,12 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
         <div className="console-screen">
           <div className="screen-border">
             <div className="screen-content">
-              <div className={`terminal-text ${isMobile ? 'mobile-segment' : ''}`}>
-                {(() => {
-                  if (isMobile) {
-                    const allLines = displayedText.split('\n');
-                    let start = 0;
-                    for (let i = allLines.length - 2; i >= 0; i--) {
-                      if (allLines[i] === '') {
-                        start = i + 1;
-                        break;
-                      }
-                    }
-                    const endIndex =
-                      allLines[allLines.length - 1] === '' ? allLines.length - 1 : allLines.length;
-                    const lines = allLines.slice(start, endIndex);
-                    return lines.map((line, index) => (
-                      <div key={index} className="terminal-line">
-                        {line}
-                      </div>
-                    ));
-                  }
-                  return displayedText.split('\n').map((line, index) => (
-                    <div key={index} className="terminal-line">
-                      {line}
-                    </div>
-                  ));
-                })()}
+              <div className={`terminal-text ${isMobile ? 'mobile-scrollable' : ''}`} ref={terminalRef}>
+                {displayedText.split('\n').map((line, index) => (
+                  <div key={index} className="terminal-line">
+                    {line}
+                  </div>
+                ))}
               </div>
 
               {currentLineIndex >= storyLines.length && (
@@ -159,11 +150,15 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
             <div className="control-label">CONTROLS</div>
             <div className="control-buttons">
               <button className="control-btn" onClick={skipStory}>
-                ⏭ SKIP [SPACE]
+                <>
+                  ⏭ SKIP<br />[SPACE]
+                </>
               </button>
               {currentLineIndex >= storyLines.length && (
                 <button className="control-btn primary" onClick={onStoryComplete}>
-                  ▶ DEPLOY [ENTER]
+                  <>
+                    ▶ DEPLOY<br />[ENTER]
+                  </>
                 </button>
               )}
             </div>
@@ -172,13 +167,15 @@ const StoryIntro: React.FC<StoryIntroProps> = ({ onStoryComplete }) => {
       </div>
 
       {/* Mobile floating control button */}
-      <button
-        className={`mobile-control-button ${currentLineIndex >= storyLines.length ? '' : 'skip'}`}
-        onClick={currentLineIndex >= storyLines.length ? onStoryComplete : skipStory}
-        aria-label={currentLineIndex >= storyLines.length ? 'Deploy' : 'Skip Story'}
-      >
-        {currentLineIndex >= storyLines.length ? '▶' : '⏭'}
-      </button>
+      {isMobile && (
+        <button
+          className={`mobile-control-button ${currentLineIndex >= storyLines.length ? '' : 'skip'}`}
+          onClick={currentLineIndex >= storyLines.length ? onStoryComplete : skipStory}
+          aria-label={currentLineIndex >= storyLines.length ? 'Deploy' : 'Skip Story'}
+        >
+          {currentLineIndex >= storyLines.length ? '▶' : '⏭'}
+        </button>
+      )}
     </div>
   );
 };

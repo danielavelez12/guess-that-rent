@@ -385,14 +385,16 @@
   margin: 20px;
   border-radius: 10px;
   border: 3px solid #383;
-  min-height: 400px;
+  min-height: 80vh;
+  height: 80vh;
 }
 
 .complete-content {
   padding: 40px;
   text-align: center;
   color: #fff;
-  min-height: 400px;
+  min-height: 80vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -461,32 +463,6 @@
   text-shadow: 0 0 5px currentColor;
 }
 
-.stat-value.grade-sss {
-  color: #ff44ff;
-  text-shadow: 0 0 10px #ff44ff;
-}
-.stat-value.grade-s,
-.stat-value.grade-s\+ {
-  color: #ffff44;
-  text-shadow: 0 0 10px #ffff44;
-}
-.stat-value.grade-a,
-.stat-value.grade-a\+ {
-  color: #44ff44;
-  text-shadow: 0 0 10px #44ff44;
-}
-.stat-value.grade-b {
-  color: #44aaff;
-  text-shadow: 0 0 10px #44aaff;
-}
-.stat-value.grade-c {
-  color: #ff8844;
-  text-shadow: 0 0 10px #ff8844;
-}
-.stat-value.grade-d {
-  color: #ff4444;
-  text-shadow: 0 0 10px #ff4444;
-}
 
 .completion-message {
   font-size: 1.1rem;
@@ -638,6 +614,7 @@
   .error-content,
   .complete-content {
     padding: 20px 15px;
+    min-height: 500px;
   }
 
   .loading-title,
@@ -657,6 +634,7 @@
   .error-screen,
   .complete-screen {
     margin: 12px;
+    min-height: 500px;
   }
 
   .loading-text,
@@ -733,6 +711,7 @@
   .error-content,
   .complete-content {
     padding: 15px 12px;
+    min-height: 450px;
   }
 
   .loading-title,
@@ -751,6 +730,7 @@
   .error-screen,
   .complete-screen {
     margin: 8px;
+    min-height: 450px;
   }
 
   .loading-text,
